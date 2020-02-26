@@ -1,0 +1,21 @@
+https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
+
+
+
+export FLASK_APP=run.py
+export FLASK_ENV=development
+
+(interchangable with 'set' for windows)
+
+flask db init
+flask db migrate -m "users table"
+flask db upgrade
+
+
+new_user = User(Username = "", ...)
+db.session.add(<object>)
+db.session.commit()
+
+
+each post form needs... within the <form></form>
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>

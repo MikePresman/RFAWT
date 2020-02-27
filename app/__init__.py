@@ -19,7 +19,7 @@ migrate = Migrate(app, db)
 
 login = LoginManager(app)
 
-mail = Mail(app)
+#mail = Mail(app)
 
 csrf = CSRFProtect(app)
 

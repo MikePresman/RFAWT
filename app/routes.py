@@ -14,27 +14,26 @@ def index():
         return redirect(url_for("home"))
 
     if request.method == "POST":
-        username = request.form.get("login")
+        username = request.form.get("username")
         password = request.form.get("password")
+        remember_me = request.form.get("remember-me")
+        remember_status = False
 
         user = User.query.filter_by(username = username).first()
-        if user.check_password(password) is False:
+        if user is None or user.check_password(password) is False:
             return redirect(url_for("index"))
+                
+        remember_status = True if remember_me == "True" else False
+        login_user(user, remember = remember_status)
 
-        login_user(user)
-        return redirect(url_for("register"))
+        return redirect(url_for("home"))
 
     return render_template("index.html")
-
-
 
 @app.route("/register", methods =["POST", "GET"])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("index"))
-
-    print('------ {0}'.format(request.form))
-
 
     if request.method == "POST":
         username = request.form.get("username")

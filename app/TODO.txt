@@ -1,0 +1,2 @@
+This will serve as an endpoint.
+Users will go to {ip_addr}:{port} and login to get access to end point

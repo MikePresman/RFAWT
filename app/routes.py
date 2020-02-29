@@ -21,6 +21,7 @@ def index():
 
         user = User.query.filter_by(username = username).first()
         if user is None or user.check_password(password) is False:
+            flash("Incorrect Login")
             return redirect(url_for("index"))
                 
         remember_status = True if remember_me == "True" else False
@@ -47,7 +48,6 @@ def register():
 
         exists = User.query.filter_by(username = username).first()
         if exists is not None:
-            print("error")
             flash("User by this name already exists")
             return redirect(url_for("register"))
 
@@ -66,5 +66,6 @@ def register():
 
     return render_template("register.html")
     
+
 
 

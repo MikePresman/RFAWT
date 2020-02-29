@@ -1,3 +1,19 @@
+    
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <center>
+      <font color = red>
+      <ul>
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+      </ul>
+  </center>
+      {%endif%}
+  {%endwith%}
+
+  <font color=black>
+
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>

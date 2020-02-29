@@ -1,2 +1,5 @@
 This will serve as an endpoint.
 Users will go to {ip_addr}:{port} and login to get access to end point
+
+whenever a computer on the network adds the common folder, or requests access from the head, 
+they are then added to the network as a child

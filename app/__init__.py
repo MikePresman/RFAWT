@@ -6,12 +6,15 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
+from app.click_commands import test
 
 import os
 
 app = Flask(__name__)
 
 app.config.from_object(Config) #this inherits the Config class, makes the Flask config be overwritten by this
+
+app.cli.add_command(test)
 
 db = SQLAlchemy(app)
 

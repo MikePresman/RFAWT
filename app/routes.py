@@ -5,8 +5,19 @@ from app.models import User
 from flask import render_template, redirect, flash, url_for, request, session
 from flask_login import current_user, login_user, logout_user, login_required
 
-import os
+from app.file_manager import FileManager
 
+@app.route("/home", methods=["POST", "GET"])
+def home():
+    '''
+    if current_user.is_authenticated is False:
+        return redirect(url_for("index"))
+    '''
+    filemgr = FileManager()
+    filemgr.walk_root_folder()
+    #user = User.query.filter_by(id=current_user.id).first()
+
+    return render_template("home.html", name = "debug mode, put user.username after")
 
 @app.route("/", methods=["POST", "GET"])
 def index():

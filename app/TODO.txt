@@ -1,5 +1,12 @@
 This will serve as an endpoint.
 Users will go to {ip_addr}:{port} and login to get access to end point
 
-whenever a computer on the network adds the common folder, or requests access from the head, 
-they are then added to the network as a child
+
+Have one folder called public_share where everything in there can then be accessed from endpoint. 
+Login to get access to those files.
+Either download those files, or play those files on device
+
+
+Other PCs make request to head to become a child
+once head accepts, the child recieves a download file which is a child-endpoint socket server
+this socket server lives in the background and allows the head to connect to the children

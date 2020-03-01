@@ -12,7 +12,7 @@ import os
 
 app = Flask(__name__)
 
-app.config.from_object(Config) #this inherits the Config class, makes the Flask config be overwritten by this
+app.config.from_object(Config)
 
 app.cli.add_command(test)
 

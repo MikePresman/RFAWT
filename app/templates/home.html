@@ -196,43 +196,30 @@
               <thead>
                 
                   <tr>
+                      <th>File Path</th>  
                       <th>File Name</th>
                       <th>File Size</th>
                       <th>Date Modified</th>
-                      
                       <th>Download File</th>
                       <th>View File</th>
                   </tr>
               </thead>
               <tbody>
-                <col width="100">
+                
+
+                {%for key, value in info.items()%}
+                  {%for each in value%}                  
+                    
                   <tr>
-                      <td>Tiger</td>
-                      <td>Nixon</td>
-                      <td>System Architect</td>
+                      <td>{{each[0]}}</td>
+                      <td>{{each[1]}}</td>
+                      <td>{{each[2]}}kb</td>
+                      <td>{{each[3]}}</td>
                   </tr>
-                  <col width="100">
-                  <tr>
-                      <td>Garrett</td>
-                      <td>Winters</td>
-                      <td>Accountant</td>
-                  </tr>
-                  <col width="200">
-                  <tr>
-                      <td>Ashton</td>
-                      <td>Cox</td>
-                      <td>Junior Technical Author</td>
-                  </tr>
-                  <tr>
-                      <td>Cedric</td>
-                      <td>Kelly</td>
-                      <td>Senior Javascript Developer</td>
-                  </tr>
-                  <tr>
-                      <td>Airi</td>
-                      <td>Satou</td>
-                      <td>Accountant</td>
-                  </tr>
+                  {%endfor%}
+                  {%endfor%}
+                
+             
                 
               </tbody>
           </table>

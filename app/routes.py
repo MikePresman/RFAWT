@@ -14,10 +14,19 @@ def home():
         return redirect(url_for("index"))
     '''
     
-    walk_root_folder()
+    
+    directory_info = walk_root_folder()
+    
+
+    
+
+
+
+    
+    
     #user = User.query.filter_by(id=current_user.id).first()
 
-    return render_template("home.html", name = "debug mode, put user.username after")
+    return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
 
 @app.route("/", methods=["POST", "GET"])
 def index():

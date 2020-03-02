@@ -14,7 +14,7 @@ def home():
         return redirect(url_for("index"))
     '''
     
-    
+
     directory_info = walk_root_folder()
     
 

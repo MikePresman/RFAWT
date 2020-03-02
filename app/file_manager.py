@@ -2,12 +2,12 @@ import os
 import datetime as dt
 import math
 
-def walk_root_folder(directory_info = {}, directory =  r'C:\LAN_Public'):
+def walk_root_folder(directory =  r'C:\LAN_Public'):
+    directory_info = {}
     for dirname, dirnames, filenames in os.walk(directory):
         if directory_info.get(dirname) is None:
             directory_info[dirname] = []
             
-        
         #file handling
         for filename in filenames:
             file_path = os.path.join(dirname, filename)

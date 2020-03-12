@@ -10,3 +10,18 @@ Either download those files, or play those files on device
 Other PCs make request to head to become a child
 once head accepts, the child recieves a download file which is a child-endpoint socket server
 this socket server lives in the background and allows the head to connect to the children
+
+
+data structure needs to be a dictionary of a dictionary
+
+{
+    folder1 :{file_path : 
+                        [filename, filesize, etc]
+            },
+            
+    folder2: {file_path : 
+                        [filename, filesize, etc]
+            },
+    
+    
+}

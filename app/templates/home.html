@@ -33,12 +33,7 @@
   </a>
   <nav id="sidebar" class="sidebar-wrapper">
     <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <a href="#">pro sidebar</a>
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
+      
       <div class="sidebar-header">
         <div class="user-pic">
           
@@ -119,28 +114,7 @@
             </div>
           </li>
        
-          <li class="sidebar-dropdown">
-            <a href="#">
-              <i class="fa fa-chart-line"></i>
-              <span>Charts</span>
-            </a>
-            <div class="sidebar-submenu">
-              <ul>
-                <li>
-                  <a href="#">Pie chart</a>
-                </li>
-                <li>
-                  <a href="#">Line chart</a>
-                </li>
-                <li>
-                  <a href="#">Bar chart</a>
-                </li>
-                <li>
-                  <a href="#">Histogram</a>
-                </li>
-              </ul>
-            </div>
-          </li>
+         
           <li class="sidebar-dropdown">
             <a href="#">
               <i class="fa fa-globe"></i>
@@ -216,7 +190,15 @@
                       <td>{{each[1]}}</td>
                       <td>{{each[2]}} Kb</td>
                       <td>{{each[3]}}</td>
+                      <td>
+                        {%set url = each[0] %}
+                        <button onclick="run(({{url}}))">Download</button>
+                      </td>
                   </tr>
+
+               
+
+                  
                   {%endfor%}
                   {%endfor%}
                 
@@ -250,3 +232,12 @@
     font-size:12px !important;
   }
 </style>
+
+
+<script>
+  function run(url){
+   
+   window.open(URL, null);
+
+}
+</script>

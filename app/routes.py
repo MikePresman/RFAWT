@@ -2,31 +2,26 @@ from app import app, db
 from config import Config
 from app.models import User
 
-from flask import render_template, redirect, flash, url_for, request, session
+from flask import render_template, redirect, flash, url_for, request, session, send_file
 from flask_login import current_user, login_user, logout_user, login_required
 
 from app.file_manager import walk_root_folder
 
 @app.route("/home", methods=["POST", "GET"])
 def home():
+
+    if request.method=="POST":
+        send_file(request.values.get("download-link"), as_attachment=True)
     '''
     if current_user.is_authenticated is False:
         return redirect(url_for("index"))
     '''
-    
 
-    directory_info = walk_root_folder()
-    
-
-    
-
-
-
-    
-    
+    directory_info = walk_root_folder()    
     #user = User.query.filter_by(id=current_user.id).first()
+    return render_template("index.html", name = "debug mode, put user.username after", info = directory_info)
 
-    return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
+
 
 @app.route("/", methods=["POST", "GET"])
 def index():
@@ -36,7 +31,7 @@ def index():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        remember_me = request.form.get("remember-me")
+        remember_me = request.form.get("remember-me")       
         remember_status = False
 
         user = User.query.filter_by(username = username).first()

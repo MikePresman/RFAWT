@@ -1,13 +1,22 @@
 import os
 import datetime as dt
 import math
+import pprint
 
 def walk_root_folder(directory =  r'C:\LAN_Public'):
     directory_info = {}
     for dirname, dirnames, filenames in os.walk(directory):
-        if directory_info.get(dirname) is None:
-            directory_info[dirname] = []
+        if directory_info.get(directory) is None:
+            directory_info[directory] = {}
+
+        
+        
+        
+        if directory_info.get(directory).get(dirname) is None:
             
+            directory_info[directory][dirname] = []
+
+        
         #file handling
         for filename in filenames:
             file_path = os.path.join(dirname, filename)
@@ -22,15 +31,17 @@ def walk_root_folder(directory =  r'C:\LAN_Public'):
             date_added_to_folder = dt.datetime.strftime(dt_timestamp, "%a %b %d %H:%M:%S %Y")
 
             
-            directory_info[dirname].append([file_path, filename, file_size, date_added_to_folder])
+            directory_info[directory][dirname].append([file_path, filename, file_size, date_added_to_folder])
             
  
     for subdir in dirnames:
         folder_path = os.path.join(dirname, subdir)
         if os.path.isdir(folder_path):
             walk_root_folder(directory_info, directory) #a little bit of recursion magic
-    
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(directory_info)
     return directory_info
+    
             
 
        

@@ -171,7 +171,7 @@
                 
                   <tr>
                       <th>File Path</th>  
-                    <th>File Name</th>
+                      <th>File Name</th>
                       
                       <th>File Size</th>
                       <th>Date Modified</th>
@@ -184,7 +184,6 @@
 
                 {%for key, value in info.items()%}
                   {%for each in value%}                  
-                    
                   <tr>
                       <td>{{each[0]}}</td>
                       <td>{{each[1]}}</td>
@@ -192,14 +191,16 @@
                       <td>{{each[3]}}</td>
                       <td>
                         {%set url = each[0] %}
-                        <button onclick="run(({{url}}))">Download</button>
+                        <button>
+                          <a href="{{url_for('download_file', file_dir = each[0])}}">Download</a>
+                            </button>
                       </td>
-                  </tr>
 
-               
-
-                  
-                  {%endfor%}
+                      {%if each[4] == true %}
+                        <td><button onclick="run(({{url}}))">View</button></td>
+                        {%endif%}
+                  </tr>                
+                    {%endfor%}
                   {%endfor%}
                 
              
@@ -230,6 +231,9 @@
   }
   .table{
     font-size:12px !important;
+  }
+  td{
+    padding-left:50px;
   }
 </style>
 

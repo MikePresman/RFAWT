@@ -7,6 +7,8 @@ from flask_login import current_user, login_user, logout_user, login_required
 
 from app.file_manager import walk_root_folder
 
+from pathlib import Path
+
 @app.route("/home", methods=["POST", "GET"])
 def home():
 
@@ -20,6 +22,11 @@ def home():
     directory_info = walk_root_folder()    
     #user = User.query.filter_by(id=current_user.id).first()
     return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
+
+
+@app.route("/download_file/<file_dir>", methods=["GET"])
+def download_file(file_dir):
+    return send_file(file_dir, as_attachment = True)
 
 
 

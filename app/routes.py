@@ -8,10 +8,10 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.file_manager import walk_root_folder
 
 from pathlib import Path
+from ast import literal_eval as make_tuple
 
 @app.route("/home", methods=["POST", "GET"])
 def home():
-
     if request.method=="POST":
         send_file(request.values.get("download-link"), as_attachment=True)
     '''
@@ -28,9 +28,10 @@ def home():
 def download_file(file_dir):
     return send_file(file_dir, as_attachment = True)
 
-@app.route("/view-file/<file_dir>", methods=["GET"])
-def view_file(file_dir):
-    return
+@app.route("/view_file/<file_dir>/<file_info>", methods=["GET"])
+def view_file(file_dir, file_info):
+    _, file_type, extension = make_tuple(file_info)
+    return render_template("view.html", file_dir = file_dir, file_type = file_type, extension = extension)
 
 @app.route("/", methods=["POST", "GET"])
 def index():

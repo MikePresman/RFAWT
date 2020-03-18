@@ -50,19 +50,9 @@
           </span>
         </div>
       </div>
+
       <!-- sidebar-header  -->
-      <div class="sidebar-search">
-        <div>
-          <div class="input-group">
-            <input type="text" id="myInput" onkeyup="myFunction()" class="form-control search-menu" placeholder="Search...">
-            <div class="input-group-append">
-              <span class="input-group-text">
-                <i class="fa fa-search" aria-hidden="true"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+      
       <!-- sidebar-search  -->
       <div class="sidebar-menu">
         <ul>
@@ -157,53 +147,20 @@
   <!-- sidebar-wrapper  -->
   <main class="page-content">
     <div class="container-fluid">
-     
+     {%if file_info[0] == true %}
+        <video controls width="250">
+
+        <source src="/media/examples/flower.webm"
+                type="video/webm">
+    
+        <source src="/media/examples/flower.mp4"
+                type="video/mp4">
+    
+        Sorry, your browser doesn't support embedded videos.
+    </video>
+    {%endif%}
       
-      <div class="table-responsive" id="sailorTableArea">
-          <table id="sailorTable" class="table table-striped table-bordered" width="100%">
-       
-              <thead>
-                
-                  <tr>
-                      <th>File Path</th>  
-                      <th>File Name</th>
-                      <th>File Size</th>
-                      <th>Date Modified</th>
-                      <th>Download File</th>
-                      <th>View File</th>
-                  </tr>
-              </thead>
-              <tbody>
-                
-
-                {%for key, value in info.items()%}
-                  {%for each in value%}                  
-                  <tr>
-                      <td>{{each[0]}}</td>
-                      <td>{{each[1]}}</td>
-                      <td>{{each[2]}} Kb</td>
-                      <td>{{each[3]}}</td>
-                      <td>  
-                          <a href="{{url_for('download_file', file_dir = each[0])}}">Download
-                      </td>
-
-                      {%if each[4][0] == true %}                      
-                        <td><a href="{{url_for('view_file', file_dir = each[0], file_info=each[4])}}">View</td>
-                      {%else%}
-                          <td>N/A</td>
-                      {%endif%}
-
-
-
-                  </tr>                
-                    {%endfor%}
-                  {%endfor%}
-                
-             
-                
-              </tbody>
-          </table>
-          </div>
+   
     </div>
 
   </main>

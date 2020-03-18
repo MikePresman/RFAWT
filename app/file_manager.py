@@ -6,15 +6,11 @@ import pprint
 def walk_root_folder(directory =  r'C:\LAN_Public'):
     directory_info = {}
     for dirname, dirnames, filenames in os.walk(directory):
-        if directory_info.get(directory) is None:
-            directory_info[directory] = {}
+        if directory_info.get(dirname) is None:
+            directory_info[dirname] = []
 
         
         
-        
-        if directory_info.get(directory).get(dirname) is None:
-            
-            directory_info[directory][dirname] = []
 
         
         #file handling
@@ -31,7 +27,7 @@ def walk_root_folder(directory =  r'C:\LAN_Public'):
             date_added_to_folder = dt.datetime.strftime(dt_timestamp, "%a %b %d %H:%M:%S %Y")
 
             
-            directory_info[directory][dirname].append([file_path, filename, file_size, date_added_to_folder])
+            directory_info[dirname].append([file_path, filename, file_size, date_added_to_folder])
             
  
     for subdir in dirnames:

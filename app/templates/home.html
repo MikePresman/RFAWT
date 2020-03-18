@@ -54,7 +54,7 @@
       <div class="sidebar-search">
         <div>
           <div class="input-group">
-            <input type="text" class="form-control search-menu" placeholder="Search...">
+            <input type="text" id="myInput" onkeyup="myFunction()" class="form-control search-menu" placeholder="Search...">
             <div class="input-group-append">
               <span class="input-group-text">
                 <i class="fa fa-search" aria-hidden="true"></i>
@@ -189,16 +189,18 @@
                       <td>{{each[1]}}</td>
                       <td>{{each[2]}} Kb</td>
                       <td>{{each[3]}}</td>
-                      <td>
-                        {%set url = each[0] %}
-                        <button>
-                          <a href="{{url_for('download_file', file_dir = each[0])}}">Download</a>
-                            </button>
+                      <td>  
+                          <a href="{{url_for('download_file', file_dir = each[0])}}">Download
                       </td>
 
                       {%if each[4] == true %}
-                        <td><button onclick="run(({{url}}))">View</button></td>
-                        {%endif%}
+                        <td><a href="{{url_for('view_file', file_dir = each[0])}}">View</td>
+                      {%else%}
+                          <td>N/A</td>
+                      {%endif%}
+
+
+
                   </tr>                
                     {%endfor%}
                   {%endfor%}
@@ -239,9 +241,23 @@
 
 
 <script>
-  function run(url){
-   
-   window.open(URL, null);
-
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("sailorTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
 }
 </script>
+

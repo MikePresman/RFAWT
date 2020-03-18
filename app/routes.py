@@ -28,7 +28,9 @@ def home():
 def download_file(file_dir):
     return send_file(file_dir, as_attachment = True)
 
-
+@app.route("/view-file/<file_dir>", methods=["GET"])
+def view_file(file_dir):
+    return
 
 @app.route("/", methods=["POST", "GET"])
 def index():

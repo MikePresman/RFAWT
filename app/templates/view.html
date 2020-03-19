@@ -149,7 +149,7 @@
     <div class="container-fluid">
         {%if file_type == "video" %}
             <video controls width="700">
-                <source src="{{file_dir}}" type="video/{{extension}}">
+                <source src="{{url_for('static', filename = file_dir)}}" type="video/{{extension}}">
                 </video>
         {%else%}
                 <img src = {{url_for('static', filename = file_dir) }}

@@ -22,7 +22,6 @@ def walk_root_folder(directory =  r'C:\LAN_Public'):
             dt_timestamp = dt.datetime.fromtimestamp(os.stat(file_path).st_ctime)
             date_added_to_folder = dt.datetime.strftime(dt_timestamp, "%a %b %d %H:%M:%S %Y")
 
-            
             directory_info[dirname].append([file_path, filename, file_size, date_added_to_folder, viewable_file_type(filename)])
 
  
@@ -39,14 +38,13 @@ def walk_root_folder(directory =  r'C:\LAN_Public'):
     
 def viewable_file_type(filename) -> tuple:
     file_extension = os.path.splitext(filename)[1]
-
     acceptable_video_file_types = [".mp3", ".mp4", ".webm", ".avi", ".mpg", ".flv", ".mpeg"]
     acceptable_photo_file_types = [".jpg", ".jpeg", ".png", ".tiff", "gif"]
 
     if file_extension in acceptable_photo_file_types:
-        return(True, "photo", file_extension[1:]) #stripping the . from .jpg
-    elif file_extension in acceptable_photo_file_types:
-        return(True, "video", file_extension[1:])
+        return(True, "photo", file_extension[1:], filename) #stripping the . from .jpg
+    elif file_extension in acceptable_video_file_types:
+        return(True, "video", file_extension[1:], filename)
     else:
         return(False, file_extension)
 

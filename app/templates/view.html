@@ -147,18 +147,15 @@
   <!-- sidebar-wrapper  -->
   <main class="page-content">
     <div class="container-fluid">
-     {%if file_info[0] == true %}
-        <video controls width="250">
+        {%if file_type == "video" %}
+            <video controls width="700">
+                <source src="{{file_dir}}" type="video/{{extension}}">
+                </video>
+        {%else%}
+                <img src = {{url_for('static', filename = file_dir) }}
 
-        <source src="/media/examples/flower.webm"
-                type="video/webm">
     
-        <source src="/media/examples/flower.mp4"
-                type="video/mp4">
-    
-        Sorry, your browser doesn't support embedded videos.
-    </video>
-    {%endif%}
+        {%endif%}
       
    
     </div>

@@ -30,26 +30,28 @@ def home():
 def download_file(file_dir):
     return send_file(file_dir, as_attachment = True)
 
-@app.route("/view_file/<file_dir>/<file_info>", methods=["GET"])
-def view_file(file_dir, file_info):
-    #check to make sure temp is clean, otherwise delete all exisiting files.
-    directory = os.getcwd() + r'\app\static\temp'
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            f = open(str(directory) + "\\" + str(file), 'w')
-            if f.closed is False:
-                f.close()
-            os.remove(directory + "\\" + file)
-            
-    
+@app.route("/view_file/<file_name>/", methods=["GET", "POST"])
+def view_file(file_name):
+    if request.method == "POST":
+        #check to make sure temp is clean, otherwise delete all exisiting files.
+        directory = os.getcwd() + r'\app\static\temp'
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                f = open(str(directory) + "\\" + str(file), 'w')
+                if f.closed is False:
+                    f.close()
+                os.remove(directory + "\\" + file)
+
+        data = request.values.get("view").split(":")
+
     #copy folder into temp folder since cant server static images from C:\ only from static folder
-    new_dir = copy(file_dir, app.root_path + "/static/temp")
-    _, file_type, extension, file_name = make_tuple(file_info)
+    new_dir = copy(data[0] + ":" + data[1], app.root_path + "/static/temp")
+    _, file_type, extension, file_name = make_tuple(data[2])
 
     #check to make sure is viewable type
     if _ is False:
         return redirect(url_for('home'))
-
+    
     return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
 
 @app.route("/", methods=["POST", "GET"])

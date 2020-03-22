@@ -176,6 +176,7 @@
               <tbody>
                 
 
+                  
                 {%for key, value in info.items()%}
                   {%for each in value%}                  
                   <tr>
@@ -187,8 +188,12 @@
                           <a href="{{url_for('download_file', file_dir = each[0])}}">Download
                       </td>
 
-                      {%if each[4][0] == true %}                      
-                        <td><a href="{{url_for('view_file', file_dir = each[0], file_info=each[4])}}">View</td>
+                      {%if each[4][0] == true %}  
+                      <form method = "POST" action = "view_file/{{each[1]}}/">
+                        <td>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type = "submit" name = "view" id = "view" value = "{{each[0]}}:{{each[4]}}">
+                        </td>
                       {%else%}
                           <td>N/A</td>
                       {%endif%}

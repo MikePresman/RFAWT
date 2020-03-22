@@ -14,3 +14,6 @@ this socket server lives in the background and allows the head to connect to the
 
 in the future implement a tree file structure
 https://www.geeksforgeeks.org/generic-tree-level-order-traversal/
+
+
+rework on view click to input hidden so URL is cleaner

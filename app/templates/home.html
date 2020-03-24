@@ -192,7 +192,7 @@
                       <form method = "POST" action = "view_file/{{each[1]}}/">
                         <td>
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <button type = "submit" name = "view" id = "view" value = "{{each[0]}}:{{each[4]}}">
+                        <button type = "submit" name = "view" id = "view" value = "{{each[0]}}:{{each[4]}}">View</button>
                         </td>
                       {%else%}
                           <td>N/A</td>
@@ -231,6 +231,18 @@
   td{
     padding-left:50px;
   }
+
+  button {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  /*optional*/
+  font-family: arial, sans-serif;
+  /*input has OS specific font-family*/
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+}
 </style>
 
 

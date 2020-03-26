@@ -1,30 +1,14 @@
+from flask import render_template, redirect, flash, url_for, request, session, send_file, jsonify
+from flask_login import current_user, login_user, logout_user, login_required
+import socket
 from app import app, db
 from config import Config
 from app.models import User
-
-from flask import render_template, redirect, flash, url_for, request, session, send_file
-from flask_login import current_user, login_user, logout_user, login_required
-
 from app.file_manager import walk_root_folder
 
-from pathlib import Path
 from ast import literal_eval as make_tuple
 from shutil import copy
 import os
-
-@app.route("/home", methods=["POST", "GET"])
-def home():
-    if request.method=="POST":
-        send_file(request.values.get("download-link"), as_attachment=True)
-    '''
-    if current_user.is_authenticated is False:
-        return redirect(url_for("index"))
-    '''
-
-    directory_info = walk_root_folder()    
-    #user = User.query.filter_by(id=current_user.id).first()
-    return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
-
 
 @app.route("/download_file/<file_dir>", methods=["GET"])
 def download_file(file_dir):
@@ -54,8 +38,55 @@ def view_file(file_name):
     
     return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
 
+
+
+
+@app.route("/child-node-setup", methods = ["GET", "POST"])
+def child_node_setup():
+    if request.method == "POST":
+        ip_addr = request.values.get("ip")
+        port = request.values.get("port")
+    return render_template("child-node.html")
+
+    
+@app.route("/listen", methods = ["GET"])
+def listen():
+    HOST = "127.0.0.1" #this is the IP we connect to
+    PORT = 65432    #this is the port we connect to    
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        s.sendall(b'Hello World')
+        data = s.recv(1024)
+
+    print("Recieved", repr(data))
+
+@app.route("/download-server", methods = ["GET"])
+def download_server():
+    send_file(os.getcwd() + "\\app\\server.py", as_attachment = True)
+    return redirect(url_for("child_node_setup"))
+
+    
+
+
+
+
+
+
+@app.route("/home", methods=["POST", "GET"])
+def home():
+    '''
+    if current_user.is_authenticated is False:
+        return redirect(url_for("index"))
+    '''
+
+    directory_info = walk_root_folder()    
+    #user = User.query.filter_by(id=current_user.id).first()
+    return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
+
 @app.route("/", methods=["POST", "GET"])
 def index():
+    return redirect(url_for("home"))
     if current_user.is_authenticated:
         return redirect(url_for("home"))
 

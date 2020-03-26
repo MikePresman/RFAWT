@@ -157,53 +157,24 @@
   <!-- sidebar-wrapper  -->
   <main class="page-content">
     <div class="container-fluid">
-     
-      
-      <div class="table-responsive" id="sailorTableArea">
-          <table class="table table-hover" width="100%">
-       
-              <thead>
-                
-                  <tr>
-                      <th>File Path</th>  
-                      <th>File Name</th>
-                      <th>File Size</th>
-                      <th>Date Modified</th>
-                      <th>Download File</th>
-                      <th>View File</th>
-                  </tr>
-              </thead>
-              <tbody>
-                
+        <form method = "POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="form-group">
+              <label for="exampleInputEmail1">IP</label>
+              <input type="text" class="form-control" id="ip" placeholder="IP Address">
+              <small id="emailHelp" class="form-text text-muted">To get this local ip address type in "ipconfig" in your windows command prompt.</small>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Port</label>
+              <input type="text" class="form-control" id="port" placeholder="Port">
+            </div>
+           
+            <button type="submit" class="btn btn-primary">Submit</button>
 
-                  
-                {%for key, value in info.items()%}
-                  {%for each in value%}                  
-                  <tr>
-                      <td>{{each[0]}}</td>
-                      <td>{{each[1]}}</td>
-                      <td>{{each[2]}} Kb</td>
-                      <td>{{each[3]}}</td>
-                      <td>  
-                          <a href="{{url_for('download_file', file_dir = each[0])}}">Download
-                      </td>
-
-                      {%if each[4][0] == true %}  
-                      <form method = "POST" action = "view_file/{{each[1]}}/">
-                        <td>
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <button type = "submit" name = "view" id = "view" value = "{{each[0]}}:{{each[4]}}">View</button>
-                        </td>
-                      {%else%}
-                          <td>N/A</td>
-                      {%endif%}
-                  </tr>                
-                    {%endfor%}
-                  {%endfor%}
-
-              </tbody>
-          </table>
-          </div>
+        </br>
+        </br>
+            <a href="{{url_for('download_server')}}">Download Server Here</a>
+        </form>
     </div>
 
   </main>
@@ -227,26 +198,13 @@
   }
   .table{
     font-size:12px !important;
-    border: 0px !important;
   }
   td{
     padding-left:50px;
   }
 
-  button {
-  background: none!important;
-  border: none;
-  padding: 0!important;
-  /*optional*/
-  font-family: arial, sans-serif;
-  /*input has OS specific font-family*/
-  color: #069;
-  text-decoration: underline;
-  cursor: pointer;
-  }
-
-  .table.
-  
+ 
+}
 </style>
 
 

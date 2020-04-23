@@ -8,33 +8,16 @@
 #the head adds this server to its database as a list to try
 
 
-#then work on remotely seeing all files on client pc (through server) and fetching them for download
-
-
 import socket
-import os
-from file_manager import walk_root_folder
-import json
 
-#check if folder lan-explorer exists, if it doesnt make it under C:\
-root_dir = "C:\\LAN_Public"
-if os.path.exists(root_dir) is False:
-    os.mkdir(root_dir)
-else:
-    print("Local Network Directory Exists")
-os.chdir(root_dir)
-
-
-#start server connection
 hostname = socket.gethostname()    
-IPAddr = socket.gethostbyname(hostname)   
-HOST = IPAddr       # Standard loopback interface address (localhost)
-PORT = 65432        #dynamically generate port
-
+IPAddr = socket.gethostbyname(hostname)    
 print("Your Computer Name is:" + hostname)    
 print("Your Computer IP Address is:" + IPAddr)    
-print("Your Computer Port is:" + str(PORT))
 
+
+HOST = IPAddr  # Standard loopback interface address (localhost)
+PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
@@ -43,11 +26,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     with conn:
         print('Connected by', addr)
         while True:
-            data = walk_root_folder()
-            s = json.dumps(data).encode('utf-8')
-            conn.send(s)
-            #connection drops after conn.send()
-            
+            data = conn.recv(1024)
+            if not data:
+                break
+            conn.sendall(data)
+
+
+
 #this is an endpoint
 #user startsup endpoint, adds the ip address in the web app
 #the web app then searches for all endpoints that are online (try and catch)

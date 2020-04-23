@@ -14,6 +14,7 @@ import os
 def download_file(file_dir):
     return send_file(file_dir, as_attachment = True)
 
+
 @app.route("/view_file/<file_name>/", methods=["GET", "POST"])
 def view_file(file_name):
     if request.method == "POST":
@@ -39,8 +40,6 @@ def view_file(file_name):
     return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
 
 
-
-
 @app.route("/child-node-setup", methods = ["GET", "POST"])
 def child_node_setup():
     if request.method == "POST":
@@ -49,26 +48,52 @@ def child_node_setup():
     return render_template("child-node.html")
 
     
-@app.route("/listen", methods = ["GET"])
+@app.route("/tryconnection", methods = ["GET"])
 def listen():
-    HOST = "127.0.0.1" #this is the IP we connect to
-    PORT = 65432    #this is the port we connect to    
+    HOST = '192.168.0.14' #this is the IP we connect to
+    HOST1 = '192.168.0.14' #this is the IP we connect to
+    PORT = 65431    #this is the port we connect to   
+    PORT2 = 65432    #this is the port we connect to   
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-        s.sendall(b'Hello World')
-        data = s.recv(1024)
+    info = [[HOST, PORT], [HOST1, PORT2]]
+    for each in info:
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((each[0], each[1]))
+                s.sendall(b'Hello World')
+                data = s.recv(1024)
+        except ConnectionRefusedError as e:
+            print(e)
+            return redirect(url_for("home"))
+        print("Recieved", repr(data))
+        continue
+    return redirect(url_for("home"))
 
+
+#make this is a paramterized URL with the computer name
+@app.route("/get")
+def get_dir_info():
+    HOST = '192.168.0.14' #this is the IP we connect to
+    PORT = 65432    #this is the port we connect to   
+    
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((HOST, PORT))
+            data = s.recv(1024)
+            data.decode('utf-8')
+            print(data)
+    except ConnectionRefusedError as e:
+        print(e)
+        return redirect(url_for("home"))
     print("Recieved", repr(data))
+    return redirect(url_for("home"))    
+
+
 
 @app.route("/download-server", methods = ["GET"])
 def download_server():
-    send_file(os.getcwd() + "\\app\\server.py", as_attachment = True)
-    return redirect(url_for("child_node_setup"))
-
-    
-
-
+    download_link = os.getcwd() + "\\app\\server.py" #make sure sending .exe
+    return send_file(download_link, as_attachment = True)
 
 
 

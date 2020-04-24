@@ -16,6 +16,13 @@ import os
 from file_manager import walk_root_folder
 import json
 
+
+def send_folder_data(conn):
+    data = walk_root_folder()
+    s = json.dumps(data).encode('utf-8')
+    conn.send(s)
+
+
 #check if folder lan-explorer exists, if it doesnt make it under C:\
 root_dir = "C:\\LAN_Public"
 if os.path.exists(root_dir) is False:
@@ -29,7 +36,7 @@ os.chdir(root_dir)
 hostname = socket.gethostname()    
 IPAddr = socket.gethostbyname(hostname)   
 HOST = IPAddr       # Standard loopback interface address (localhost)
-PORT = 65432        #dynamically generate port
+PORT = 65432        
 
 print("Your Computer Name is:" + hostname)    
 print("Your Computer IP Address is:" + IPAddr)    
@@ -41,12 +48,22 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.listen()
     conn, addr = s.accept()
     with conn:
-        print('Connected by', addr)
         while True:
-            data = walk_root_folder()
-            s = json.dumps(data).encode('utf-8')
-            conn.send(s)
-            #connection drops after conn.send()
+            data = conn.recv(1024) #receiving data persistently
+            if data:
+                print(data)
+            conn, addr = s.accept() #accept next connection
+            
+            
+            
+
+        
+
+                    
+
+
+
+
             
 #this is an endpoint
 #user startsup endpoint, adds the ip address in the web app

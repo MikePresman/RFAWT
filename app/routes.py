@@ -75,18 +75,13 @@ def listen():
 def get_dir_info():
     HOST = '192.168.0.14' #this is the IP we connect to
     PORT = 65432    #this is the port we connect to   
-    
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((HOST, PORT))
-            data = s.recv(1024)
-            data.decode('utf-8')
-            print(data)
-    except ConnectionRefusedError as e:
-        print(e)
-        return redirect(url_for("home"))
-    print("Recieved", repr(data))
-    return redirect(url_for("home"))    
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        s.sendall(b'Hello World')
+    return redirect(url_for("home"))
+
+
 
 
 

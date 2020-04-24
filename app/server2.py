@@ -7,8 +7,10 @@
 #connect this endpoint to the head
 #the head adds this server to its database as a list to try
 
-
 import socket
+
+
+
 
 hostname = socket.gethostname()    
 IPAddr = socket.gethostbyname(hostname)    

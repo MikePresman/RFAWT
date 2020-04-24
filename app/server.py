@@ -15,6 +15,7 @@ import socket
 import os
 from file_manager import walk_root_folder
 import json
+import sys
 
 
 def send_folder_data(conn):
@@ -52,6 +53,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             data = conn.recv(1024) #receiving data persistently
             if data:
                 print(data)
+                if data.decode('utf-8') == "exit":
+                    sys.exit()
             conn, addr = s.accept() #accept next connection
             
             

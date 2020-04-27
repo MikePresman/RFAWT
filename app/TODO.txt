@@ -28,3 +28,7 @@ child downloads file request, file request is a server which connects to the "so
 3. on page "explore network" it will try connecting to each, if successful keep that in mind then return the explore network page as different links to different PCs
 4. when clicking on a pc open connection
 5. make server into executable that outputs port and ip
+
+
+
+run on mac to make windows requests

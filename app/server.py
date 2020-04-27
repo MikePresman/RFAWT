@@ -24,13 +24,18 @@ def send_folder_data(conn):
     conn.send(s)
 
 
+#NEED TO RESTART SERVER EVERYTIME MAKING CHANGES
+
+
 #check if folder lan-explorer exists, if it doesnt make it under C:\
+'''
 root_dir = "C:\\LAN_Public"
 if os.path.exists(root_dir) is False:
     os.mkdir(root_dir)
 else:
     print("Local Network Directory Exists")
 os.chdir(root_dir)
+'''
 
 
 #start server connection
@@ -51,11 +56,15 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     with conn:
         while True:
             data = conn.recv(1024) #receiving data persistently
+            new_data = json.dumps(walk_root_folder("C:\\Users\\Mike\\Documents\\The Witcher 3")).encode('utf-8')
             if data:
                 print(data)
                 if data.decode('utf-8') == "exit":
                     sys.exit()
+                conn.sendall(new_data)
             conn, addr = s.accept() #accept next connection
+            
+            
             
             
             

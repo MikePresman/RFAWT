@@ -5,6 +5,8 @@ from app import app, db
 from config import Config
 from app.models import User
 from app.file_manager import walk_root_folder
+import requests
+import json
 
 from ast import literal_eval as make_tuple
 from shutil import copy
@@ -71,26 +73,25 @@ def listen():
 
 
 #make this is a paramterized URL with the computer name
-@app.route("/get/<message>")
+@app.route("/get/<message>", methods = ["GET"])
 def get_dir_info(message):
-    HOST = '192.168.0.14' #this is the IP we connect to
+    HOST = '192.168.0.11' #this is the IP we connect to
     PORT = 65432    #this is the port we connect to   
-
+    data = None
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
         s.sendall(message.encode('utf-8'))
-    return redirect(url_for("home"))
-
-
-
+        data = s.recv(5512)
+        data = json.loads(data)
+    
+        print(data)
+    return render_template("home.html", name = "debug mode, put user.username after", info = data)
 
 
 @app.route("/download-server", methods = ["GET"])
 def download_server():
     download_link = os.getcwd() + "\\app\\server.py" #make sure sending .exe
     return send_file(download_link, as_attachment = True)
-
-
 
 
 @app.route("/home", methods=["POST", "GET"])
@@ -100,7 +101,8 @@ def home():
         return redirect(url_for("index"))
     '''
 
-    directory_info = walk_root_folder()    
+    directory_info = walk_root_folder("C:\\LAN_Public")
+    print(directory_info)
     #user = User.query.filter_by(id=current_user.id).first()
     return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
 

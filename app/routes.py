@@ -11,6 +11,8 @@ import json
 from ast import literal_eval as make_tuple
 from shutil import copy
 import os
+import pickle
+import ast
 
 @app.route("/download_file/<file_dir>", methods=["GET"])
 def download_file(file_dir):
@@ -40,6 +42,26 @@ def view_file(file_name):
         return redirect(url_for('home'))
     
     return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
+
+
+@app.route("/remote_view_file/<file_name>/", methods = ["POST"])
+def remote_view_file(file_name):
+    HOST = '192.168.0.11' #this is the IP we connect to
+    PORT = 65432    #this is the port we connect to   
+    data = None
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+
+        message = "GET:" + file_name
+
+        s.sendall(message.encode('utf-8'))
+        data = s.recv(10000)
+        data = json.loads(data)
+    
+        print(data)
+
+
+
 
 
 @app.route("/child-node-setup", methods = ["GET", "POST"])
@@ -81,11 +103,23 @@ def get_dir_info(message):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
         s.sendall(message.encode('utf-8'))
-        data = s.recv(5512)
-        data = json.loads(data)
+        
+        #buffeer bug
+        data = s.recv(64000000)
+        
+
+        f = data.decode("utf-8") # WE GET STRING HERE, NEED TO CONVERT TO DICTIONARY FOR THE TEMPLATE
+        f = ast.literal_eval(f)
+        print(f)
+        
+
+        
+
+      
     
-        print(data)
-    return render_template("home.html", name = "debug mode, put user.username after", info = data)
+        #data = json.loads(data.decode("utf-8"))
+    
+    return render_template("home.html", name = "debug mode, put user.username after", info = f)
 
 
 @app.route("/download-server", methods = ["GET"])

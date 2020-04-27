@@ -34,14 +34,15 @@
                       </td>
 
                       {%if each[4][0] == true %}  
-                      <form method = "POST" action = "view_file/{{each[1]}}/">
-                        <td>
+                      <form method = "POST" action = "{{url_for('remote_view_file', file_name = each[1])}}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <td>
                         <button type = "submit" name = "view" id = "view" value = "{{each[0]}}:{{each[4]}}">View</button>
                         </td>
                       {%else%}
                           <td>N/A</td>
                       {%endif%}
+                      </form>
                   </tr>                
                     {%endfor%}
                   {%endfor%}

@@ -56,7 +56,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     with conn:
         while True:
             data = conn.recv(1024) #receiving data persistently
-            new_data = json.dumps(walk_root_folder("C:\\Users\\Mike\\Documents\\The Witcher 3")).encode('utf-8')
+            new_data = str(walk_root_folder("C:\\Users\\Mike\\Documents\\The Witcher 3")).encode('utf-8')
             if data:
                 print(data)
                 if data.decode('utf-8') == "exit":

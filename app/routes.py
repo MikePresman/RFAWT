@@ -76,6 +76,7 @@ def remote_view_file(file_name):
         
         #read how send_file in flask is implemented
 
+        #THIS WORKS
         f = open("/Users/mike/Downloads/file.pdf", "wb")
         
         data = s.recv(1024)

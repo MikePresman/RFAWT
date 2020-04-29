@@ -50,6 +50,7 @@ def view_file(file_name):
 @app.route("/getfile", methods = ["POST", "GET"])
 def get_file():
     print(request.data)
+    
 
     
 

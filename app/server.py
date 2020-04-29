@@ -16,6 +16,8 @@ import os
 from file_manager import walk_root_folder
 import json
 import sys
+import zlib
+import requests
 
 
 def send_folder_data(conn):
@@ -56,9 +58,47 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     with conn:
         while True:
             data = conn.recv(1024) #receiving data persistently
-            new_data = json.dumps(walk_root_folder("C:\\Users\\Mike\\Documents\\The Witcher 3")).encode('utf-8')
+            non_raw_data = data.decode("utf-8")
+            print(non_raw_data)
+            
+            #check to see whether we want to get a file
+            file_path = None
+            try:
+                if non_raw_data.split("$*$")[0] == "GET":
+                    split_data = non_raw_data.split("$*$")
+                    file_path = split_data[1]
+            except Exception as e:
+                pass
+
+
+            print(file_path)
+            #get file here and send it over
+            if file_path is not None:
+                url = "http://99.254.154.21:5000/getfile"
+                with open(file_path, 'rb') as img:
+                    print(img.read())
+                    files = {'image' : img.read()}
+                    r = requests.post(url, files = files, allow_redirects = True) #this triggers a post request to the given url
+                    print("----------------")
+                    print(r.text)
+                
+
+
+                '''
+                file_to_send = open(file_path, "rb+")
+                data_to_send = file_to_send.read(1024)
+                print(data_to_send)
+                conn.sendall(data_to_send)
+                '''
+                
+            
+            
+
+
+        
+            new_data = str(walk_root_folder("C:\\Users\\Mike\\Downloads")).encode("utf-8")
+        
             if data:
-                print(data)
                 if data.decode('utf-8') == "exit":
                     sys.exit()
                 conn.sendall(new_data)

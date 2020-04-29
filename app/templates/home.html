@@ -36,7 +36,7 @@
                       {%if each[4][0] == true %}  
                       <form method = "POST" action = "{{url_for('remote_view_file', file_name = each[1])}}">
                         <td>
-                        <button type = "submit" name = "view" id = "view" value = "{{each[0]}}:{{each[4]}}">View</button>
+                        <button type = "submit" name = "view" id = "view" value = "{{each[0]}}$*${{each[4]}}">View</button>
                         </td>
                       {%else%}
                           <td>N/A</td>

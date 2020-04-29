@@ -76,13 +76,11 @@ def remote_view_file(file_name):
         
         #read how send_file in flask is implemented
 
-        f = open("/Users/mike/Downloads/picture.jpg", "wb")
+        f = open("/Users/mike/Downloads/file.pdf", "wb")
         
         data = s.recv(1024)
         while data:
-            if data[-4:] == b"DONE":
-                break
-            if data == b"DONE":
+            if data == b'DONE':
                 break
             print(data)
             f.write(data)

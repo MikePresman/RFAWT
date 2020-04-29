@@ -74,24 +74,15 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             print(file_path)
             #get file here and send it over
             if file_path is not None:
-                url = "http://99.254.154.21:5000/getfile"
-                with open(file_path, 'rb') as img:
-                    print(img.read())
-                    files = {'image' : img.read()}
-                    r = requests.post(url, files = files, allow_redirects = True) #this triggers a post request to the given url
-                    print("----------------")
-                    print(r.text)
-                
-
-
-                '''
-                file_to_send = open(file_path, "rb+")
-                data_to_send = file_to_send.read(1024)
-                print(data_to_send)
-                conn.sendall(data_to_send)
-                '''
-                
-            
+               file_to_send = open(file_path, "rb+")
+               data_to_send = file_to_send.read(1024)
+               while (data_to_send):
+                   print(data_to_send)
+                   print("-----------------------------")
+                   conn.send(data_to_send)
+                   data = data_to_send.read(1024)
+                file_to_send.close()
+                print("finished")
             
 
 

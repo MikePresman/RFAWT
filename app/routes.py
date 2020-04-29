@@ -8,6 +8,7 @@ from app.file_manager import walk_root_folder
 import requests
 import json
 import zlib
+import sys
 
 
 
@@ -49,12 +50,9 @@ def view_file(file_name):
 
 @app.route("/getfile", methods = ["POST", "GET"])
 def get_file():
-    print(request.data)
-    
-
-    
-
-    return "Here "
+    r = request.get_data() #getting binary data that we sent
+    raw = (r.decode("utf-8"))
+    return raw
 
 @app.route("/remote_view_file/<file_name>/", methods = ["POST","GET"])
 def remote_view_file(file_name):
@@ -73,13 +71,24 @@ def remote_view_file(file_name):
 
         #only getting a quarter of the image        
         #recieving the file back
-        ''' 
-        data = s.recv(1024)    
-        with open("/Users/mike/Downloads/file.jpg", "wb+") as f:
-            f.write(data)
-        '''
+        
     
-    return redirect(url_for("get_file"))
+        
+        f = open("/Users/mike/Downloads/excel.xlsx", "wb")
+        data = s.recv(1024)
+
+        while (data):
+            f.write(data)
+            data = s.recv(1024)
+            if sys.getsizeof(data) == 0:
+                break
+        f.close()
+    
+        
+        
+        
+    
+    return redirect(url_for("home"))
 
 
 

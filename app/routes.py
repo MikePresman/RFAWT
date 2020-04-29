@@ -74,14 +74,18 @@ def remote_view_file(file_name):
         
     
         
-        f = open("/Users/mike/Downloads/excel.xlsx", "wb")
+        f = open("/Users/mike/Downloads/spreadsheet.xlsx", "wb")
         data = s.recv(1024)
 
         while (data):
             f.write(data)
             data = s.recv(1024)
-            if sys.getsizeof(data) == 0:
-                break
+            try:
+                if (data.decode("utf-8")): #NONE OF THE PACKETS ARE ENCODED IN UTF-8 SO WE CAN EXIT HERE SINCE THIS WILL BE NOT RELATED TO THE PAYLOAD FOR THE FILE TRANSFER
+                    return redirect(url_for("home"))
+            except Exception as e:
+                continue
+          
         f.close()
     
         
@@ -104,7 +108,7 @@ def get_dir_info(message):
         s.sendall(message.encode('utf-8'))
         
         #buffer bug, try compressing it first
-        data = s.recv(1024)
+        data = s.recv(5012)
         #flask --run host = 0.0.0.0
         f = data.decode("utf-8") # WE GET STRING HERE, NEED TO CONVERT TO DICTIONARY FOR THE TEMPLATE
     

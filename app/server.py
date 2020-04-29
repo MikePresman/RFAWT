@@ -84,7 +84,7 @@ def server():
                         data_to_send = file_to_send.read(1024)
                     file_to_send.close()
                     print("Finished")
-                    conn.send(b"DONE")
+                    conn.sendall(b"DONE")
                     
 
 

@@ -7,7 +7,6 @@ from app.models import User
 from app.file_manager import walk_root_folder
 import requests
 import json
-import zlib
 
 from ast import literal_eval as make_tuple
 from shutil import copy
@@ -105,15 +104,13 @@ def get_dir_info(message):
         s.connect((HOST, PORT))
         s.sendall(message.encode('utf-8'))
         
-        #buffer bug, try compressing it first
-        data = s.recv(1024)
-        #flask --run host = 0.0.0.0
-        f = data.decode("utf-8") # WE GET STRING HERE, NEED TO CONVERT TO DICTIONARY FOR THE TEMPLATE
-    
-        f = ast.literal_eval(f) #converting string to dictionary to pass to template
+        #buffeer bug
+        data = s.recv(64000000)
         
 
-        #after buffer bug is fixed work on remote_view_file to get files across to remote client
+        f = data.decode("utf-8") # WE GET STRING HERE, NEED TO CONVERT TO DICTIONARY FOR THE TEMPLATE
+        f = ast.literal_eval(f)
+        print(f)
         
 
         

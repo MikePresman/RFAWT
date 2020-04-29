@@ -74,7 +74,9 @@ def remote_view_file(file_name):
         
     
         
-        f = open("/Users/mike/Downloads/spreadsheet.xlsx", "wb")
+        #read how send_file in flask is implemented
+
+        f = open("/Users/mike/Downloads/picture.jpg", "wb")
         data = s.recv(1024)
 
         while (data):

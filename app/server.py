@@ -83,6 +83,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                    data = data_to_send.read(1024)
                 file_to_send.close()
                 print("finished")
+
+                #its better to close the socket, but in order to keep the socket open for future we just do
+                marker = "DONE"
+                conn.send(marker.encode("UTF-8"))
             
 
 

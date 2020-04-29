@@ -18,7 +18,8 @@ import json
 import sys
 import zlib
 import requests
-
+import io
+import struct
 
 def send_folder_data(conn):
     data = walk_root_folder()
@@ -39,72 +40,87 @@ else:
 os.chdir(root_dir)
 '''
 
+def server():
+    #start server connection
+    hostname = socket.gethostname()    
+    IPAddr = socket.gethostbyname(hostname)   
+    HOST = IPAddr       # Standard loopback interface address (localhost)
+    PORT = 65432        
 
-#start server connection
-hostname = socket.gethostname()    
-IPAddr = socket.gethostbyname(hostname)   
-HOST = IPAddr       # Standard loopback interface address (localhost)
-PORT = 65432        
-
-print("Your Computer Name is:" + hostname)    
-print("Your Computer IP Address is:" + IPAddr)    
-print("Your Computer Port is:" + str(PORT))
-
-
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        while True:
-            data = conn.recv(1024) #receiving data persistently
-            non_raw_data = data.decode("utf-8")
-            print(non_raw_data)
-            
-            #check to see whether we want to get a file
-            file_path = None
-            try:
-                if non_raw_data.split("$*$")[0] == "GET":
-                    split_data = non_raw_data.split("$*$")
-                    file_path = split_data[1]
-            except Exception as e:
-                pass
+    print("Your Computer Name is:" + hostname)    
+    print("Your Computer IP Address is:" + IPAddr)    
+    print("Your Computer Port is:" + str(PORT))
 
 
-            print(file_path)
-            #get file here and send it over
-            if file_path is not None:
-               file_to_send = open(file_path, "rb+")
-               data_to_send = file_to_send.read(1024)
-               while (data_to_send):
-                   print(data_to_send)
-                   print("-----------------------------")
-                   conn.send(data_to_send)
-                   data = data_to_send.read(1024)
-                file_to_send.close()
-                print("finished")
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((HOST, PORT))
+        s.listen()
+        conn, addr = s.accept()
+        with conn:
+            while True:
+                data = conn.recv(1024) #receiving data persistently
+                non_raw_data = data.decode("utf-8")
+                print(non_raw_data)
+                
+                #check to see whether we want to get a file
+                file_path = None
+                try:
+                    if non_raw_data.split("$*$")[0] == "GET":
+                        split_data = non_raw_data.split("$*$")
+                        file_path = split_data[1]
+                except Exception as e:
+                    pass
 
-                #its better to close the socket, but in order to keep the socket open for future we just do
-                marker = "DONE"
-                conn.send(marker.encode("UTF-8"))
-            
+
+                print(file_path)
+                #get file here and send it over
+                if file_path is not None:
+                    file_to_send = open(file_path, "rb+")
+                    data_to_send = file_to_send.read(1024)
+                    while (data_to_send):
+                        print(data_to_send)
+                        print("---------------------")
+                        conn.send(data_to_send)
+                        data_to_send = file_to_send.read(1024)
+                    file_to_send.close()
+                    print("Finished")
+                    conn.sendall(b"DONE")
+                    
 
 
-        
-            new_data = str(walk_root_folder("C:\\Users\\Mike\\Downloads")).encode("utf-8")
-        
-            if data:
-                if data.decode('utf-8') == "exit":
-                    sys.exit()
-                conn.sendall(new_data)
-            conn, addr = s.accept() #accept next connection
-            
-            
-            
-            
-            
+                    '''V1 WORKING
+                           if file_path is not None:
+                    file_to_send = open(file_path, "rb+")
+                    data_to_send = file_to_send.read(1024)
+                    while (data_to_send):
+                        print(data_to_send)
+                        print("---------------------")
+                        conn.send(data_to_send)
+                        data_to_send = file_to_send.read(1024)
+                    file_to_send.close()
+                    print("Finished")
+                    conn.shutdown(2)
+                    conn.close()
+                    return
+                    
+                    '''
+                    
+                
+                if data:
+                    if data.decode('utf-8') == "exit":
+                        sys.exit()
+                    if data.decode("utf-8") == "view":
+                        new_data = str(walk_root_folder("C:\\Users\\Mike\\Downloads")).encode("utf-8")
+                        conn.sendall(new_data)
+                conn, addr = s.accept() #accept next connection
+                
+                
+                
+                
+                
 
-        
+if __name__ == "__main__":
+    server()
 
                     
 

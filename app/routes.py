@@ -77,20 +77,29 @@ def remote_view_file(file_name):
         #read how send_file in flask is implemented
 
         f = open("/Users/mike/Downloads/picture.jpg", "wb")
+        
         data = s.recv(1024)
-
-        while (data):
+        while data:
+            if data[-4:] == b"DONE":
+                break
+            if data == b"DONE":
+                break
+            print(data)
             f.write(data)
             data = s.recv(1024)
-            try:
-                if (data.decode("utf-8")): #NONE OF THE PACKETS ARE ENCODED IN UTF-8 SO WE CAN EXIT HERE SINCE THIS WILL BE NOT RELATED TO THE PAYLOAD FOR THE FILE TRANSFER
-                    return redirect(url_for("home"))
-            except Exception as e:
-                continue
-          
         f.close()
     
         
+        '''V1 WORKING CORRESPONDING
+         f = open("/Users/mike/Downloads/picture.jpg", "wb")
+        
+        data = s.recv(1024)
+        while data:
+            print(data)
+            f.write(data)
+            data = s.recv(1024)
+        f.close()
+        '''
         
         
     

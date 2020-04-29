@@ -7,6 +7,9 @@ from app.models import User
 from app.file_manager import walk_root_folder
 import requests
 import json
+import zlib
+
+
 
 from ast import literal_eval as make_tuple
 from shutil import copy
@@ -44,25 +47,66 @@ def view_file(file_name):
     return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
 
 
-@app.route("/remote_view_file/<file_name>/", methods = ["POST"])
+@app.route("/getfile", methods = ["POST", "GET"])
+def get_file():
+    print(request.data)
+
+    
+
+    return "Here "
+
+@app.route("/remote_view_file/<file_name>/", methods = ["POST","GET"])
 def remote_view_file(file_name):
+    info = request.form.get("view")
+
     HOST = '192.168.0.11' #this is the IP we connect to
     PORT = 65432    #this is the port we connect to   
     data = None
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
-
-        message = "GET:" + file_name
-
+        #sending data to server to get the file we want
+        message = "GET$*$" + str(info)
         s.sendall(message.encode('utf-8'))
-        data = s.recv(10000)
-        data = json.loads(data)
+        
+
+
+        #only getting a quarter of the image        
+        #recieving the file back
+        ''' 
+        data = s.recv(1024)    
+        with open("/Users/mike/Downloads/file.jpg", "wb+") as f:
+            f.write(data)
+        '''
     
-        print(data)
+    return redirect(url_for("get_file"))
 
 
 
 
+#make this is a paramterized URL with the computer name
+@app.route("/get/<message>", methods = ["GET"])
+def get_dir_info(message):
+    HOST = '192.168.0.11' #this is the IP we connect to
+    PORT = 65432    #this is the port we connect to   
+    data = None
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        s.sendall(message.encode('utf-8'))
+        
+        #buffer bug, try compressing it first
+        data = s.recv(1024)
+        #flask --run host = 0.0.0.0
+        f = data.decode("utf-8") # WE GET STRING HERE, NEED TO CONVERT TO DICTIONARY FOR THE TEMPLATE
+    
+        f = ast.literal_eval(f) #converting string to dictionary to pass to template
+        
+
+        #after buffer bug is fixed work on remote_view_file to get files across to remote client
+        
+
+        #data = json.loads(data.decode("utf-8"))
+    
+    return render_template("home.html", name = "debug mode, put user.username after", info = f)
 
 @app.route("/child-node-setup", methods = ["GET", "POST"])
 def child_node_setup():
@@ -71,7 +115,6 @@ def child_node_setup():
         port = request.values.get("port")
     return render_template("child-node.html")
 
-    
 @app.route("/tryconnection", methods = ["GET"])
 def listen():
     HOST = '192.168.0.14' #this is the IP we connect to
@@ -93,40 +136,10 @@ def listen():
         continue
     return redirect(url_for("home"))
 
-
-#make this is a paramterized URL with the computer name
-@app.route("/get/<message>", methods = ["GET"])
-def get_dir_info(message):
-    HOST = '192.168.0.11' #this is the IP we connect to
-    PORT = 65432    #this is the port we connect to   
-    data = None
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-        s.sendall(message.encode('utf-8'))
-        
-        #buffeer bug
-        data = s.recv(64000000)
-        
-
-        f = data.decode("utf-8") # WE GET STRING HERE, NEED TO CONVERT TO DICTIONARY FOR THE TEMPLATE
-        f = ast.literal_eval(f)
-        print(f)
-        
-
-        
-
-      
-    
-        #data = json.loads(data.decode("utf-8"))
-    
-    return render_template("home.html", name = "debug mode, put user.username after", info = f)
-
-
 @app.route("/download-server", methods = ["GET"])
 def download_server():
     download_link = os.getcwd() + "\\app\\server.py" #make sure sending .exe
     return send_file(download_link, as_attachment = True)
-
 
 @app.route("/home", methods=["POST", "GET"])
 def home():
@@ -134,7 +147,6 @@ def home():
     if current_user.is_authenticated is False:
         return redirect(url_for("index"))
     '''
-
     directory_info = walk_root_folder("C:\\LAN_Public")
     print(directory_info)
     #user = User.query.filter_by(id=current_user.id).first()

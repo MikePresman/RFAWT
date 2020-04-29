@@ -24,7 +24,7 @@ login = LoginManager(app)
 
 #mail = Mail(app)
 
-csrf = CSRFProtect(app)
+#csrf = CSRFProtect(app)
 
 
 

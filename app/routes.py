@@ -82,6 +82,10 @@ def remote_view_file(file_name):
         while data:
             if data == b'DONE':
                 break
+            if data[-4:] == b'DONE':
+                data_to_write = data[:len(data) - 4]
+                f.write(data_to_write)
+                break
             print(data)
             f.write(data)
             data = s.recv(1024)

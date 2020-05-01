@@ -1,0 +1,33 @@
+{%include 'header.html' %}
+
+<body>
+    <main class="page-content">
+        <div class="container">
+                    <ul id="list-inline">
+                        <li class = "list-inline-item">Web Server PC</br><a href="{{url_for('pc_access', pc_name = 'local')}}"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
+                            <!-- hacky way to add space in between items-->
+                            <li class = "list-inline-item"></li>
+                            <li class = "list-inline-item"></li>
+                            <li class = "list-inline-item"></li>
+                            <li class = "list-inline-item"></li>
+                            <li class = "list-inline-item"></li>
+                        </li>
+
+                        {%for each in pcs%}
+                        <li class = "list-inline-item">{{each.pc_name}}</br><a href="#"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
+                            <!-- hacky way to add space in between items-->
+                            <li class = "list-inline-item"></li>
+                            <li class = "list-inline-item"></li>
+                            <li class = "list-inline-item"></li>
+                            <li class = "list-inline-item"></li>
+                            <li class = "list-inline-item"></li>
+                        </li>
+                    {%endfor%}
+                </ul>
+            </form>
+        </div>
+
+
+    </main>
+</body>
+

@@ -38,3 +38,5 @@ run on mac to make windows requests
 flask run --host=0.0.0.0
 
 make this work where the server for the web app doesnt also need to run a server to get its own stuff
+
+Router - Port Forwarding, TCP/UDP, public and private Port is 5000, IP is the LAN IP of the computer running the web server

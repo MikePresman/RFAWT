@@ -45,6 +45,22 @@ def viewable_file_type(filename) -> tuple:
 
 
 
+def walk_folder(directory):
+    directory_info = {}
+    for dirname, dirnames, filenames in os.walk(directory):
+        if directory_info.get(dirname) is None:
+            directory_info[dirname] = []
+
+
+'''
+get =====  C:/
+directory = [
+                [file_path, file_name, file_size, etc.], 
+                [file_path, file_name, file_size, etc.], 
+                [folder_name, folder_path],
+                [folder_name, folder_path        
+            ]
+'''
 
 
 

@@ -72,7 +72,6 @@ def server():
                     pass
 
 
-                print(file_path)
                 #get file here and send it over
                 if file_path is not None:
                     file_to_send = open(file_path, "rb+")

@@ -17,6 +17,114 @@ import os
 import pickle
 import ast
 
+@app.route("/", methods=["POST", "GET"])
+def index():
+    return redirect(url_for("home"))
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard"))
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        remember_me = request.form.get("remember-me")       
+        remember_status = False
+
+        user = User.query.filter_by(username = username).first()
+        if user is None or user.check_password(password) is False:
+            flash("Incorrect Login")
+            return redirect(url_for("index"))
+                
+        remember_status = True if remember_me == "True" else False
+        login_user(user, remember = remember_status)
+
+        return redirect(url_for("dashboard"))
+
+    return render_template("index.html")
+
+@app.route("/register", methods =["POST", "GET"])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm_password = request.form.get("password-confirmation")
+        secret_key = request.form.get("secret-key")
+
+        if password != confirm_password:
+            print("mistake here")
+            return redirect(url_for("register"))
+
+        exists = User.query.filter_by(username = username).first()
+        if exists is not None:
+            flash("User by this name already exists")
+            return redirect(url_for("register"))
+
+    
+        if (app.config['REGISTER_KEY']) != int(secret_key):
+            print("incorrect secret_key")
+            flash("incorrect secret_key")
+            return redirect(url_for("register"))
+        
+        
+        user = User(username = username)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for("index"))
+
+    return render_template("register.html")
+    
+@app.route("/dashboard", methods=["GET"])
+def dashboard():
+    pcs_on_network = LocalNetwork.query.all()
+    pcs_online = []
+    #try connection to see which ones are open, then remove the ones that arent
+    for each in pcs_on_network:
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((each.ip_addr, each.port))
+                pcs_online.append(each)
+        except Exception as e:
+            continue
+    return render_template("dashboard.html", pcs = pcs_online)
+
+
+@app.route("/pc-access/<pc_name>", methods = ["GET"])
+def pc_access(pc_name):
+    if pc_name.lower() == "local":
+        pass
+        #MAKE IT JUST LIKE FILE EXPLORER, DONT HAVE TO HAVE DROP DOWN BOX BUT JUST KEEP CLICKING ON NEXT FOLDER
+        #THE PARAMETER WILL SEARCH FOR ALL ROOT DIRECTORIES
+        #BUT FIRST NEED TO ESTABLISH SOCKET CONNECTION IF PC_NAME IS NOT LOCAL
+
+
+    return "Hello World"
+
+
+
+#have to figure out how to do walk_root_folder but handle for all available folders on the PC
+
+
+
+@app.route("/home", methods=["POST", "GET"])
+def home():
+    '''
+    if current_user.is_authenticated is False:
+        return redirect(url_for("index"))
+    '''
+    
+
+    directory_info = walk_root_folder("C:\\LAN_Public")
+
+
+
+    #user = User.query.filter_by(id=current_user.id).first()
+    return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
+
+
+
 @app.route("/download_file/<file_dir>", methods=["GET"])
 def download_file(file_dir):
     return send_file(file_dir, as_attachment = True)
@@ -138,12 +246,14 @@ def get_dir_info(message):
 @app.route("/child-node-setup", methods = ["GET", "POST"])
 def child_node_setup():
     delete = request.form.get("delete")
+    print(delete)
     all_pcs_on_network = LocalNetwork.query.all()
 
     if request.method == "POST" and delete is not None:
         LocalNetwork.query.filter_by(id=int(delete)).delete()
         db.session.commit()
         return redirect(url_for("child_node_setup"))
+
 
     if request.method == "POST":
         pc_name = request.form.get("pc_name")
@@ -153,7 +263,7 @@ def child_node_setup():
         db.session.add(new_pc)
         db.session.commit()
         return redirect(url_for("child_node_setup"))
-
+    
 
     return render_template("child-node.html", pcs = all_pcs_on_network)
 
@@ -182,77 +292,4 @@ def listen():
 def download_server():
     download_link = os.getcwd() + "\\app\\server.py" #make sure sending .exe
     return send_file(download_link, as_attachment = True)
-
-@app.route("/home", methods=["POST", "GET"])
-def home():
-    '''
-    if current_user.is_authenticated is False:
-        return redirect(url_for("index"))
-    '''
-    directory_info = walk_root_folder("C:\\LAN_Public")
-    print(directory_info)
-    #user = User.query.filter_by(id=current_user.id).first()
-    return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
-
-@app.route("/", methods=["POST", "GET"])
-def index():
-    return redirect(url_for("home"))
-    if current_user.is_authenticated:
-        return redirect(url_for("home"))
-
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        remember_me = request.form.get("remember-me")       
-        remember_status = False
-
-        user = User.query.filter_by(username = username).first()
-        if user is None or user.check_password(password) is False:
-            flash("Incorrect Login")
-            return redirect(url_for("index"))
-                
-        remember_status = True if remember_me == "True" else False
-        login_user(user, remember = remember_status)
-
-        return redirect(url_for("home"))
-
-    return render_template("index.html")
-
-@app.route("/register", methods =["POST", "GET"])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        confirm_password = request.form.get("password-confirmation")
-        secret_key = request.form.get("secret-key")
-
-        if password != confirm_password:
-            print("mistake here")
-            return redirect(url_for("register"))
-
-        exists = User.query.filter_by(username = username).first()
-        if exists is not None:
-            flash("User by this name already exists")
-            return redirect(url_for("register"))
-
-        
-        if (app.config['REGISTER_KEY']) != int(secret_key):
-            print("incorrect secret_key")
-            flash("incorrect secret_key")
-            return redirect(url_for("register"))
-        
-        
-        user = User(username = username)
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for("index"))
-
-    return render_template("register.html")
-    
-
-
 

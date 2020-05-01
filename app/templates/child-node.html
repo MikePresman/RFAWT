@@ -5,13 +5,18 @@
         <form method = "POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="form-group">
+              <label for="exampleInputEmail1">PC Name</label>
+              <input type="text" class="form-control" id="pc_name" name = "pc_name" placeholder="PC Name">
+              <small id="emailHelp" class="form-text text-muted">This will be the Identifying Name of this PC on the explore servers page</small>
+            </div>
+            <div class="form-group">
               <label for="exampleInputEmail1">IP</label>
-              <input type="text" class="form-control" id="ip" placeholder="IP Address">
+              <input type="text" class="form-control" id="ip" name = "ip" placeholder="IP Address">
               <small id="emailHelp" class="form-text text-muted">To get this local ip address type in "ipconfig" in your windows command prompt.</small>
             </div>
             <div class="form-group">
               <label for="exampleInputPassword1">Port</label>
-              <input type="text" class="form-control" id="port" placeholder="Port">
+              <input type="text" class="form-control" id="port" name = "port" placeholder="Port">
             </div>
            
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -19,8 +24,41 @@
         </br>
         </br>
             <a href="{{url_for('download_server')}}">Download Server Here</a>
-        </form>
+        
     </div>
+
+    <div class="table-responsive" id="sailorTableArea">
+      <table class="table table-hover" width="100%">
+   
+          <thead>
+            
+              <tr>
+                  <th>PC Name</th>  
+                  <th>IP Address</th>
+                  <th>Port</th>
+                  <th>Date Added</th>
+                  <th>Delete</th>
+              </tr>
+          </thead>
+          <tbody>
+
+            {%for each in pcs%}
+            <tr>
+                <td>{{each.pc_name}}</td>
+                <td>{{each.ip_addr}}</td>
+                <td>{{each.port}}</td>
+                <td>{{each.date_added}}</td>
+                <td>
+                  <button class = "btn-primary" name = "delete" value = {{each.id}}>
+                      Delete
+                  </button>
+                </td>
+            </tr>                
+              {%endfor%}
+        </tbody>
+    </table>
+    </div>
+  </form>
 
   </main>
   <!-- page-content" -->

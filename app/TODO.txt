@@ -32,3 +32,9 @@ child downloads file request, file request is a server which connects to the "so
 
 
 run on mac to make windows requests
+
+
+
+flask run --host=0.0.0.0
+
+make this work where the server for the web app doesnt also need to run a server to get its own stuff

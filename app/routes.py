@@ -3,14 +3,13 @@ from flask_login import current_user, login_user, logout_user, login_required
 import socket
 from app import app, db
 from config import Config
-from app.models import User
+from app.models import User, LocalNetwork
 from app.file_manager import walk_root_folder
 import requests
 import json
 import zlib
 import sys
-
-
+from datetime import datetime
 
 from ast import literal_eval as make_tuple
 from shutil import copy
@@ -75,9 +74,9 @@ def remote_view_file(file_name):
     
         
         #read how send_file in flask is implemented
-
+        path = "B:/Downloads/file.pdf"
         #THIS WORKS
-        f = open("/Users/mike/Downloads/file.pdf", "wb")
+        f = open(path, "wb")
         
         data = s.recv(1024)
         while data:
@@ -138,10 +137,25 @@ def get_dir_info(message):
 
 @app.route("/child-node-setup", methods = ["GET", "POST"])
 def child_node_setup():
+    delete = request.form.get("delete")
+    all_pcs_on_network = LocalNetwork.query.all()
+
+    if request.method == "POST" and delete is not None:
+        LocalNetwork.query.filter_by(id=int(delete)).delete()
+        db.session.commit()
+        return redirect(url_for("child_node_setup"))
+
     if request.method == "POST":
-        ip_addr = request.values.get("ip")
-        port = request.values.get("port")
-    return render_template("child-node.html")
+        pc_name = request.form.get("pc_name")
+        ip_addr = request.form.get("ip")
+        port = request.form.get("port")
+        new_pc = LocalNetwork(pc_name = pc_name, ip_addr = ip_addr, port = port, date_added = datetime.utcnow())
+        db.session.add(new_pc)
+        db.session.commit()
+        return redirect(url_for("child_node_setup"))
+
+
+    return render_template("child-node.html", pcs = all_pcs_on_network)
 
 @app.route("/tryconnection", methods = ["GET"])
 def listen():

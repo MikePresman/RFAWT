@@ -18,6 +18,15 @@ class User(UserMixin, db.Model):
         
 
 
+class LocalNetwork(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    pc_name = db.Column(db.String(64), index = True)
+    ip_addr = db.Column(db.String(64), unique = True)
+    port = db.Column(db.Integer)
+    date_added = db.Column(db.String(120))
+
+
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

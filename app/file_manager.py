@@ -34,7 +34,7 @@ def walk_root_folder(directory):
 def viewable_file_type(filename) -> tuple:
     file_extension = os.path.splitext(filename)[1]
     acceptable_video_file_types = [".mp3", ".mp4", ".webm", ".avi", ".mpg", ".flv", ".mpeg"]
-    acceptable_photo_file_types = [".jpg", ".jpeg", ".png", ".tiff", "gif"]
+    acceptable_photo_file_types = [".jpg", ".jpeg", ".png", ".tiff", ".gif", ".pdf"]
 
     if file_extension in acceptable_photo_file_types:
         return(True, "photo", file_extension[1:], filename) #stripping the . from .jpg

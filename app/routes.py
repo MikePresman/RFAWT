@@ -85,9 +85,10 @@ def dashboard():
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.connect((each.ip_addr, each.port))
-                pcs_online.append(each)
+                pcs_online.append([True, each])
         except Exception as e:
-            continue
+            pcs_online.append([False, each]) #not online
+    print(pcs_online)
     return render_template("dashboard.html", pcs = pcs_online)
 
 

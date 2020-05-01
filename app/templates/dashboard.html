@@ -14,7 +14,13 @@
                         </li>
 
                         {%for each in pcs%}
-                        <li class = "list-inline-item">{{each.pc_name}}</br><a href="#"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
+                            
+                        <li class = "list-inline-item">{{each[1].pc_name}}
+                            {%if each[0] == False%}
+                                <font color = "red"> - Offline</font></br><a href="#"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
+                            {%else%}
+                                <a href="link"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
+                            {%endif%}
                             <!-- hacky way to add space in between items-->
                             <li class = "list-inline-item"></li>
                             <li class = "list-inline-item"></li>

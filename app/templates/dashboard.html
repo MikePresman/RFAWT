@@ -4,7 +4,7 @@
     <main class="page-content">
         <div class="container">
                     <ul id="list-inline">
-                        <li class = "list-inline-item">Web Server PC</br><a href="{{url_for('pc_access', pc_name = 'local')}}"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
+                        <li class = "list-inline-item">Web Server PC</br><a href="{{ url_for('pc_access', pc_name = 'local') }}"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
                             <!-- hacky way to add space in between items-->
                             <li class = "list-inline-item"></li>
                             <li class = "list-inline-item"></li>
@@ -19,7 +19,7 @@
                             {%if each[0] == False%}
                                 <font color = "red"> - Offline</font></br><a href="#"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
                             {%else%}
-                                <a href="link"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
+                                <a href="{{ url_for('pc_access', pc_name = each[1].id) }}"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
                             {%endif%}
                             <!-- hacky way to add space in between items-->
                             <li class = "list-inline-item"></li>

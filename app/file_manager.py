@@ -11,18 +11,22 @@ def walk_root_folder(directory):
 
         #file handling
         for filename in filenames:
-            file_path = os.path.join(dirname, filename)
-            
-            #file size in kb
-            file_size = os.stat(file_path).st_size
-            file_size = int(file_size)/1024
-            file_size = math.ceil(file_size)
 
-            #date modified
-            dt_timestamp = dt.datetime.fromtimestamp(os.stat(file_path).st_ctime)
-            date_added_to_folder = dt.datetime.strftime(dt_timestamp, "%a %b %d %H:%M:%S %Y")
+            try:
+                file_path = os.path.join(dirname, filename)
+                
+                #file size in kb
+                file_size = os.stat(file_path).st_size
+                file_size = int(file_size)/1024
+                file_size = math.ceil(file_size)
 
-            directory_info[dirname].append([file_path, filename, file_size, date_added_to_folder, viewable_file_type(filename)])
+                #date modified
+                dt_timestamp = dt.datetime.fromtimestamp(os.stat(file_path).st_ctime)
+                date_added_to_folder = dt.datetime.strftime(dt_timestamp, "%a %b %d %H:%M:%S %Y")
+
+                directory_info[dirname].append([file_path, filename, file_size, date_added_to_folder, viewable_file_type(filename)])
+            except Exception as e:
+                continue
 
     
     '''
@@ -46,21 +50,42 @@ def viewable_file_type(filename) -> tuple:
 
 
 def walk_folder(directory):
-    directory_info = {}
-    for dirname, dirnames, filenames in os.walk(directory):
-        if directory_info.get(dirname) is None:
-            directory_info[dirname] = []
+    directory_info = []
+    os.chdir(directory)
+    filenames = os.listdir()
+
+    #file handling
+    for filename in filenames:
+        try:
+            file_path = os.path.join(directory, filename)
+            if os.path.isdir(file_path):
+                continue
+
+            
+        #file size in kb
+            file_size = os.stat(file_path).st_size
+            file_size = int(file_size)/1024
+            file_size = math.ceil(file_size)
+
+            #date modified
+            dt_timestamp = dt.datetime.fromtimestamp(os.stat(file_path).st_ctime)
+            date_added_to_folder = dt.datetime.strftime(dt_timestamp, "%a %b %d %H:%M:%S %Y")
+
+            directory_info.append(["file", file_path, filename, file_size, date_added_to_folder, viewable_file_type(filename)])
+        except Exception as e:
+            continue
 
 
-'''
-get =====  C:/
-directory = [
-                [file_path, file_name, file_size, etc.], 
-                [file_path, file_name, file_size, etc.], 
-                [folder_name, folder_path],
-                [folder_name, folder_path        
-            ]
-'''
+    for f in os.scandir(directory):
+        if f.is_dir():
+            directory_info.append(["folder", f.path])
+    
+    
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(directory_info)
+
+    return directory_info
+        
 
 
 

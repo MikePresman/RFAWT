@@ -4,7 +4,7 @@ import socket
 from app import app, db
 from config import Config
 from app.models import User, LocalNetwork
-from app.file_manager import walk_root_folder
+from app.file_manager import walk_root_folder, walk_folder
 import requests
 import json
 import zlib
@@ -95,6 +95,8 @@ def dashboard():
 @app.route("/pc-access/<pc_name>", methods = ["GET"])
 def pc_access(pc_name):
     if pc_name.lower() == "local":
+        walk_folder("C:\LAN_Public")
+
         pass
         #MAKE IT JUST LIKE FILE EXPLORER, DONT HAVE TO HAVE DROP DOWN BOX BUT JUST KEEP CLICKING ON NEXT FOLDER
         #THE PARAMETER WILL SEARCH FOR ALL ROOT DIRECTORIES
@@ -118,6 +120,8 @@ def home():
     
 
     directory_info = walk_root_folder("C:\\LAN_Public")
+
+    walk_folder("C:\LAN_Public")
 
 
 

@@ -116,7 +116,7 @@ def pc_access(pc_name):
 @app.route("/getReady/<id>", methods = ["POST","GET"])
 def check_if_ready(id):
     pc_info = LocalNetwork.query.filter_by(id = int(id)).first()
-    print(id + "  Here")
+    print(pc_info)
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

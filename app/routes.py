@@ -79,6 +79,9 @@ def register():
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
     pcs_on_network = LocalNetwork.query.all()
+
+    #change this
+    '''
     pcs_online = []
     #try connection to see which ones are open, then remove the ones that arent
     for each in pcs_on_network:
@@ -89,18 +92,19 @@ def dashboard():
         except Exception as e:
             pcs_online.append([False, each]) #not online
     print(pcs_online)
-    return render_template("dashboard.html", pcs = pcs_online)
+    '''
 
+    #implement check if online
+    return render_template("dashboard.html", pcs = pcs_on_network)
 
 @app.route("/pc-access/<pc_name>", methods = ["GET"])
 def pc_access(pc_name):
     if pc_name.lower() == "local":
-        walk_folder("C:\LAN_Public")
-
-        pass
-        #MAKE IT JUST LIKE FILE EXPLORER, DONT HAVE TO HAVE DROP DOWN BOX BUT JUST KEEP CLICKING ON NEXT FOLDER
-        #THE PARAMETER WILL SEARCH FOR ALL ROOT DIRECTORIES
-        #BUT FIRST NEED TO ESTABLISH SOCKET CONNECTION IF PC_NAME IS NOT LOCAL
+        directory = walk_folder("C:/")
+        return render_template("home.html", name = "debug mode, put user.username after", info = directory)
+    #MAKE IT JUST LIKE FILE EXPLORER, DONT HAVE TO HAVE DROP DOWN BOX BUT JUST KEEP CLICKING ON NEXT FOLDER
+    #THE PARAMETER WILL SEARCH FOR ALL ROOT DIRECTORIES
+    #BUT FIRST NEED TO ESTABLISH SOCKET CONNECTION IF PC_NAME IS NOT LOCAL
 
 
     return "Hello World"
@@ -109,6 +113,17 @@ def pc_access(pc_name):
 
 #have to figure out how to do walk_root_folder but handle for all available folders on the PC
 
+@app.route("/getReady/<id>", methods = ["POST","GET"])
+def check_if_ready(id):
+    pc_info = LocalNetwork.query.filter_by(id = int(id)).first()
+    print(id + "  Here")
+
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((pc_info.ip_addr, pc_info.port))
+            return "Online"
+    except Exception as e:
+        return "Offline"
 
 
 @app.route("/home", methods=["POST", "GET"])

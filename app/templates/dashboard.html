@@ -1,39 +1,62 @@
 {%include 'header.html' %}
+<header>
+</header>
 
 <body>
     <main class="page-content">
-        <div class="container">
-                    <ul id="list-inline">
-                        <li class = "list-inline-item">Web Server PC</br><a href="{{ url_for('pc_access', pc_name = 'local') }}"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
-                            <!-- hacky way to add space in between items-->
-                            <li class = "list-inline-item"></li>
-                            <li class = "list-inline-item"></li>
-                            <li class = "list-inline-item"></li>
-                            <li class = "list-inline-item"></li>
-                            <li class = "list-inline-item"></li>
-                        </li>
 
-                        {%for each in pcs%}
-                            
-                        <li class = "list-inline-item">{{each[1].pc_name}}
-                            {%if each[0] == False%}
-                                <font color = "red"> - Offline</font></br><a href="#"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
-                            {%else%}
-                                <a href="{{ url_for('pc_access', pc_name = each[1].id) }}"><img src="/static/img/pc_logo.png" width="100" height="100" /></a>
-                            {%endif%}
-                            <!-- hacky way to add space in between items-->
-                            <li class = "list-inline-item"></li>
-                            <li class = "list-inline-item"></li>
-                            <li class = "list-inline-item"></li>
-                            <li class = "list-inline-item"></li>
-                            <li class = "list-inline-item"></li>
-                        </li>
-                    {%endfor%}
-                </ul>
-            </form>
-        </div>
+        <ul id="list-inline">
+            <li class="list-inline-item">Web Server PC</br><a href="{{ url_for('pc_access', pc_name = 'local') }}"><img
+                        src="/static/img/pc_logo.png" width="100" height="100" /></a></li>
+            <!-- hacky way to add space in between items-->
+            <li class="list-inline-item"></li>
+            <li class="list-inline-item"></li>
+            <li class="list-inline-item"></li>
+            <li class="list-inline-item"></li>
+            <li class="list-inline-item"></li>
+        </ul>
 
 
+
+
+        <ul id="list-inline">
+
+
+            {%for each in pcs%}
+            <li class="list-inline-item">{{each.pc_name}}</br>
+                <a href="{{ url_for('pc_access', pc_name = each.id) }}"><img src="/static/img/pc_logo.png" width="100"
+                        height="100" /></a>
+                <form method="POST"  id = "my_form" action = "/getReady/{{each.id}}">
+                    <button type="button" name = 'button' id ='button' class="btn btn-primary btn-sm"> Check if Online</button>
+                </form>
+            </li>
+            <!-- hacky way to add space in between items-->
+            <li class="list-inline-item"></li>
+            <li class="list-inline-item"></li>
+            <li class="list-inline-item"></li>
+            <li class="list-inline-item"></li>
+            <li class="list-inline-item"></li>
+            {%endfor%}
+
+
+
+        </ul>
     </main>
 </body>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+
+    $(function(){
+        $('#button').on('click', function(e){
+            var targetForm = $('#my_form');
+            var url_to_get = targetForm.attr('action');
+            $.ajax({
+                type: "get",
+                url: url_to_get,
+                success: function(data){
+                    $("#button").text(data);
+                    $("#button").css('color', 'red');
+                }
+        })})});
+</script>

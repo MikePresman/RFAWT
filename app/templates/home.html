@@ -10,8 +10,8 @@
               <thead>
                 
                   <tr>
-                      <th>File Path</th>  
-                      <th>File Name</th>
+                      <th>File or Folder</th>  
+                      <th>File/Folder Name</th>
                       <th>File Size</th>
                       <th>Date Modified</th>
                       <th>Download File</th>
@@ -20,11 +20,12 @@
               </thead>
               <tbody>
                 
-
+                <!-- CHANGE THIS TO CORRESPOND TO WALK_FOLDER -->
                   
                 {%for key, value in info.items()%}
                   {%for each in value%}                  
                   <tr>
+                      <td>{{each[0]}}</td>
                       <td>{{each[0]}}</td>
                       <td>{{each[1]}}</td>
                       <td>{{each[2]}} Kb</td>

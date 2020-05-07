@@ -11,7 +11,6 @@ def walk_root_folder(directory):
 
         #file handling
         for filename in filenames:
-
             try:
                 file_path = os.path.join(dirname, filename)
                 
@@ -28,7 +27,7 @@ def walk_root_folder(directory):
             except Exception as e:
                 continue
 
-    
+
     '''
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(directory_info)

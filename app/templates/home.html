@@ -10,7 +10,7 @@
               <thead>
                 
                   <tr>
-                      <th>File or Folder</th>  
+                    <th>File/Folder Name</th>  
                       <th>File/Folder Name</th>
                       <th>File Size</th>
                       <th>Date Modified</th>
@@ -22,30 +22,43 @@
                 
                 <!-- CHANGE THIS TO CORRESPOND TO WALK_FOLDER -->
                   
-                {%for key, value in info.items()%}
-                  {%for each in value%}                  
+                {%for each in info%}
+                  {%if each[0] == "file"%}                  
                   <tr>
-                      <td>{{each[0]}}</td>
-                      <td>{{each[0]}}</td>
-                      <td>{{each[1]}}</td>
-                      <td>{{each[2]}} Kb</td>
-                      <td>{{each[3]}}</td>
+                      
+                    <td>{{each[2]}}</td>  
+                    <td>File</td>
+                      <td>{{each[3]}} kb</td>
+                      <td>{{each[4]}}</td>
                       <td>  
-                          <a href="{{url_for('download_file', file_dir = each[0])}}">Download
+                          <a href="{{url_for('download_file', file_dir = each[1])}}">Download
                       </td>
 
-                      {%if each[4][0] == true %}  
+                      {%if each[5][0] == true %}  
                       <form method = "POST" action = "{{url_for('remote_view_file', file_name = each[1])}}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <td>
-                        <button type = "submit" name = "view" id = "view" value = "{{each[0]}}$*${{each[4]}}">View</button>
+                        <button type = "submit" name = "view" id = "view" value = "{{each[0]}}$*${{each[5]}}">View</button>
                         </td>
-                      {%else%}
-                          <td>N/A</td>
-                      {%endif%}
                       </form>
-                  </tr>                
-                    {%endfor%}
+                      {%else%}
+                      <td>N/A</td>
+        
+                      {%endif%}
+                  {%else%}
+
+                  <td>
+                    <a href="{{url_for('pc_access_folder', folder = each[1])}}">{{each[1]}}</td>
+                    <td>Folder</td>
+                    
+                  
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                
+                  {%endif%}              
+                </tr>  
                   {%endfor%}
 
               </tbody>

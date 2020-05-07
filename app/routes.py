@@ -88,6 +88,8 @@ def pc_access(pc_name):
     if pc_name.lower() == "local":
         directory = walk_folder("C:/")
         return render_template("home.html", name = "debug mode, put user.username after", info = directory)
+
+
     #MAKE IT JUST LIKE FILE EXPLORER, DONT HAVE TO HAVE DROP DOWN BOX BUT JUST KEEP CLICKING ON NEXT FOLDER
     #THE PARAMETER WILL SEARCH FOR ALL ROOT DIRECTORIES
     #BUT FIRST NEED TO ESTABLISH SOCKET CONNECTION IF PC_NAME IS NOT LOCAL
@@ -95,7 +97,9 @@ def pc_access(pc_name):
 
     return "Hello World"
 
-
+@app.route("/pc-access/<folder>", methods = ["GET"])
+def pc_access_folder(folder):
+    return "Hello"
 
 
 
@@ -123,7 +127,7 @@ def home():
 
     directory_info = walk_root_folder("C:\\LAN_Public")
 
-    walk_folder("C:\LAN_Public")
+    #walk_folder("C:\LAN_Public")
 
 
 

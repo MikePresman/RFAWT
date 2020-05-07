@@ -16,6 +16,7 @@ from shutil import copy
 import os
 import pickle
 import ast
+import base64
 
 @app.route("/", methods=["POST", "GET"])
 def index():
@@ -97,9 +98,16 @@ def pc_access(pc_name):
 
     return "Hello World"
 
-@app.route("/pc-access/<folder>", methods = ["GET"])
+
+
+@app.route("/pc-folder/<folder>", methods = ["GET"])
 def pc_access_folder(folder):
-    return "Hello"
+    f = base64.b64decode(folder)
+    url = f.decode()
+
+    directory = walk_folder(url)
+    
+    return render_template("home.html", name = "debug mode, put user.username after", info = directory)
 
 
 
@@ -166,11 +174,6 @@ def view_file(file_name):
     return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
 
 
-@app.route("/getfile", methods = ["POST", "GET"])
-def get_file():
-    r = request.get_data() #getting binary data that we sent
-    raw = (r.decode("utf-8"))
-    return raw
 
 @app.route("/remote_view_file/<file_name>/", methods = ["POST","GET"])
 def remote_view_file(file_name):

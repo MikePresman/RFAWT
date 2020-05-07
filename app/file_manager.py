@@ -2,6 +2,7 @@ import os
 import datetime as dt
 import math
 import pprint
+import base64
 
 def walk_root_folder(directory):
     directory_info = {}
@@ -77,7 +78,9 @@ def walk_folder(directory):
 
     for f in os.scandir(directory):
         if f.is_dir():
-            directory_info.append(["folder", f.path])
+            b = str.encode(f.path)
+            url_path = base64.b64encode(b)
+            directory_info.append(["folder", f.path, url_path])
     
     
     pp = pprint.PrettyPrinter(indent=4)

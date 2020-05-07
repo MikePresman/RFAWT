@@ -1,133 +1,133 @@
 {%include 'header.html'%}
 <!-- sidebar-wrapper  -->
-  <main class="page-content">
-    <div class="container-fluid">
-     
-      
-      <div class="table-responsive" id="sailorTableArea">
-          <table class="table table-hover" width="100%">
-       
-              <thead>
-                
-                  <tr>
-                    <th>File/Folder Name</th>  
-                      <th>File/Folder Name</th>
-                      <th>File Size</th>
-                      <th>Date Modified</th>
-                      <th>Download File</th>
-                      <th>View File</th>
-                  </tr>
-              </thead>
-              <tbody>
-                
-                <!-- CHANGE THIS TO CORRESPOND TO WALK_FOLDER -->
-                  
-                {%for each in info%}
-                  {%if each[0] == "file"%}                  
-                  <tr>
-                      
-                    <td>{{each[2]}}</td>  
-                    <td>File</td>
-                      <td>{{each[3]}} kb</td>
-                      <td>{{each[4]}}</td>
-                      <td>  
-                          <a href="{{url_for('download_file', file_dir = each[1])}}">Download
-                      </td>
+<main class="page-content">
+  <div class="container-fluid">
 
-                      {%if each[5][0] == true %}  
-                      <form method = "POST" action = "{{url_for('remote_view_file', file_name = each[1])}}">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                        <td>
-                        <button type = "submit" name = "view" id = "view" value = "{{each[0]}}$*${{each[5]}}">View</button>
-                        </td>
-                      </form>
-                      {%else%}
-                      <td>N/A</td>
-        
-                      {%endif%}
-                  {%else%}
+
+    <div class="table-responsive" id="sailorTableArea">
+      <table class="table table-hover" width="100%">
+
+        <thead>
+
+          <tr>
+            <th>File/Folder Name</th>
+            <th>File/Folder Name</th>
+            <th>File Size</th>
+            <th>Date Modified</th>
+            <th>Download File</th>
+            <th>View File</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- CHANGE THIS TO CORRESPOND TO WALK_FOLDER -->
+
+          {%for each in info%}
+            {%if each[0] == "file"%}
+              <tr>
+                <td>{{each[2]}}</td>
+                <td>File</td>
+                <td>{{each[3]}} kb</td>
+                <td>{{each[4]}}</td>
+
+                <!-- DOWNLOAD -->
+                <td>
+                  <form method="POST" action="{{url_for('remote_view_file', file_name = each[1])}}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button type="submit" name="view" id="view" value="{{each[0]}}$*${{each[5]}}">Download</button>
+                  </form>
+                </td>
+
+                <!-- VIEW -->
+                {%if each[5][0] == true %}
+                <td><a href="{{url_for('view_file', file_dir = each[6], file_info=each[5])}}">View</td>
+                {%else%}
+                <td>N/A</td>
+                {%endif%}
+
+                {%else%}
 
                   <td>
                     <a href="{{url_for('pc_access_folder', folder = each[2])}}">{{each[1]}}</td>
-                    <td>Folder</td>
-                    
-                  
-                  <td>N/A</td>
-                  <td>N/A</td>
-                  <td>N/A</td>
-                  <td>N/A</td>
-                
-                  {%endif%}              
-                </tr>  
-                  {%endfor%}
+                  <td>Folder</td>
 
-              </tbody>
-          </table>
-          </div>
+
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+
+              {%endif%}
+            </tr>
+          {%endfor%}
+
+        </tbody>
+      </table>
     </div>
+  </div>
 
-  </main>
-  <!-- page-content" -->
+</main>
+<!-- page-content" -->
 </div>
 <!-- page-wrapper -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 </body>
 
 </html>
 
 <style>
-  body{
-    font-size:12px;
+  body {
+    font-size: 12px;
   }
-  .table{
-    font-size:12px !important;
+
+  .table {
+    font-size: 12px !important;
     border: 0px !important;
   }
-  td{
-    padding-left:50px;
+
+  td {
+    padding-left: 50px;
   }
 
   button {
-  background: none!important;
-  border: none;
-  padding: 0!important;
-  /*optional*/
-  font-family: arial, sans-serif;
-  /*input has OS specific font-family*/
-  color: #069;
-  text-decoration: underline;
-  cursor: pointer;
+    background: none !important;
+    border: none;
+    padding: 0 !important;
+    /*optional*/
+    font-family: arial, sans-serif;
+    /*input has OS specific font-family*/
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer;
   }
 
   .table.
-  
 </style>
 
 
 <script>
-function myFunction() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("sailorTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
+  function myFunction() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("sailorTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
       }
-    }       
+    }
   }
-}
 </script>
-

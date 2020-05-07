@@ -82,7 +82,6 @@ def dashboard():
     pcs_on_network = LocalNetwork.query.all()
     return render_template("dashboard.html", pcs = pcs_on_network)
 
-
 #TODO
 @app.route("/pc-access/<pc_name>", methods = ["GET"])
 def pc_access(pc_name):
@@ -95,27 +94,19 @@ def pc_access(pc_name):
     #THE PARAMETER WILL SEARCH FOR ALL ROOT DIRECTORIES
     #BUT FIRST NEED TO ESTABLISH SOCKET CONNECTION IF PC_NAME IS NOT LOCAL
 
-
     return "Hello World"
-
-
 
 @app.route("/pc-folder/<folder>", methods = ["GET"])
 def pc_access_folder(folder):
     f = base64.b64decode(folder)
     url = f.decode()
-
     directory = walk_folder(url)
-    
     return render_template("home.html", name = "debug mode, put user.username after", info = directory)
-
-
 
 @app.route("/getReady/<id>", methods = ["POST","GET"])
 def check_if_ready(id):
     pc_info = LocalNetwork.query.filter_by(id = int(id)).first()
-    print("here")
-    print(pc_info)
+    print(pc_info.ip_addr)
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -131,55 +122,54 @@ def home():
     if current_user.is_authenticated is False:
         return redirect(url_for("index"))
     '''
-    
 
     directory_info = walk_root_folder("C:\\LAN_Public")
 
     #walk_folder("C:\LAN_Public")
 
-
-
     #user = User.query.filter_by(id=current_user.id).first()
     return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
-
-
 
 @app.route("/download_file/<file_dir>", methods=["GET"])
 def download_file(file_dir):
     return send_file(file_dir, as_attachment = True)
 
 
-@app.route("/view_file/<file_name>/", methods=["GET", "POST"])
-def view_file(file_name):
-    if request.method == "POST":
-        #check to make sure temp is clean, otherwise delete all exisiting files.
-        directory = os.getcwd() + r'\app\static\temp'
-        for root, dirs, files in os.walk(directory):
-            for file in files:
-                f = open(str(directory) + "\\" + str(file), 'w')
-                if f.closed is False:
-                    f.close()
-                os.remove(directory + "\\" + file)
+#from scratch
+@app.route("/view_file/<file_dir>/<file_info>", methods=["GET"])
+def view_file(file_dir, file_info):
+    f = base64.b64decode(file_dir)
+    url = f.decode()
+    print("Here --- " + url)
 
-        data = request.values.get("view").split(":")
+
+
+    #check to make sure temp is clean, otherwise delete all exisiting files.
+    directory = os.getcwd() + r'\app\static\temp'
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            os.remove(directory + "\\" + file)
 
     #copy folder into temp folder since cant server static images from C:\ only from static folder
-    new_dir = copy(data[0] + ":" + data[1], app.root_path + "/static/temp")
-    _, file_type, extension, file_name = make_tuple(data[2])
+    _, file_type, extension, file_name = make_tuple(file_info)
+    
+    
+    new_dir = copy(url, app.root_path + "/static/temp")
+    print(new_dir)
+    
 
     #check to make sure is viewable type
     if _ is False:
         return redirect(url_for('home'))
-    
-    return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
 
+    return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
 
 
 @app.route("/remote_view_file/<file_name>/", methods = ["POST","GET"])
 def remote_view_file(file_name):
     info = request.form.get("view")
 
-    HOST = '192.168.0.11' #this is the IP we connect to
+    HOST = '192.168.0.12' #this is the IP we connect to
     PORT = 65432    #this is the port we connect to   
     data = None
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -235,7 +225,7 @@ def remote_view_file(file_name):
 #make this is a paramterized URL with the computer name
 @app.route("/get/<message>", methods = ["GET"])
 def get_dir_info(message):
-    HOST = '192.168.0.11' #this is the IP we connect to
+    HOST = '192.168.0.12' #this is the IP we connect to
     PORT = 65432    #this is the port we connect to   
     data = None
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

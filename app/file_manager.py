@@ -70,8 +70,12 @@ def walk_folder(directory):
             #date modified
             dt_timestamp = dt.datetime.fromtimestamp(os.stat(file_path).st_ctime)
             date_added_to_folder = dt.datetime.strftime(dt_timestamp, "%a %b %d %H:%M:%S %Y")
+            
+            
+            b = str.encode(file_path)
+            url_path = base64.b64encode(b)
 
-            directory_info.append(["file", file_path, filename, file_size, date_added_to_folder, viewable_file_type(filename)])
+            directory_info.append(["file", file_path, filename, file_size, date_added_to_folder, viewable_file_type(filename), url_path])
         except Exception as e:
             continue
 
@@ -82,10 +86,10 @@ def walk_folder(directory):
             url_path = base64.b64encode(b)
             directory_info.append(["folder", f.path, url_path])
     
-    
+    '''
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(directory_info)
-
+    '''
     return directory_info
         
 

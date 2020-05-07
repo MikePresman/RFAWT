@@ -79,24 +79,10 @@ def register():
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
     pcs_on_network = LocalNetwork.query.all()
-
-    #change this
-    '''
-    pcs_online = []
-    #try connection to see which ones are open, then remove the ones that arent
-    for each in pcs_on_network:
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.connect((each.ip_addr, each.port))
-                pcs_online.append([True, each])
-        except Exception as e:
-            pcs_online.append([False, each]) #not online
-    print(pcs_online)
-    '''
-
-    #implement check if online
     return render_template("dashboard.html", pcs = pcs_on_network)
 
+
+#TODO
 @app.route("/pc-access/<pc_name>", methods = ["GET"])
 def pc_access(pc_name):
     if pc_name.lower() == "local":
@@ -111,20 +97,21 @@ def pc_access(pc_name):
 
 
 
-#have to figure out how to do walk_root_folder but handle for all available folders on the PC
+
 
 @app.route("/getReady/<id>", methods = ["POST","GET"])
 def check_if_ready(id):
     pc_info = LocalNetwork.query.filter_by(id = int(id)).first()
+    print("here")
     print(pc_info)
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(2)
             s.connect((pc_info.ip_addr, pc_info.port))
             return "Online"
-    except Exception as e:
+    except Exception as e:        
         return "Offline"
-
 
 @app.route("/home", methods=["POST", "GET"])
 def home():

@@ -64,6 +64,7 @@
                 url: url_to_get,
                 success: function(data){
                     $(document.activeElement).text(data);
+                    console.log(data);
                     if (data == "Offline"){
                         $(document.activeElement).css('color', 'red');
                     }else{

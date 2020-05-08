@@ -42,3 +42,14 @@ make this work where the server for the web app doesnt also need to run a server
 Router - Port Forwarding, TCP/UDP, public and private Port is 5000, IP is the LAN IP of the computer running the web server
 
 implement search bar for searching specific directories
+
+
+
+
+<!-- DOWNLOAD -->
+                <td>
+                  <form method="POST" action="{{url_for('remote_view_file', file_name = each[6])}}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button type="submit" name="view" id="view" value="{{each[0]}}$*${{each[5]}}">Download</button>
+                  </form>
+                </td>

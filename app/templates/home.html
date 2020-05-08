@@ -32,9 +32,9 @@
 
                 <!-- DOWNLOAD -->
                 <td>
-                  <form method="POST" action="{{url_for('remote_view_file', file_name = each[1])}}">
+                  <form method="GET" action="{{url_for('download_file', file_dir = each[6])}}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                    <button type="submit" name="view" id="view" value="{{each[0]}}$*${{each[5]}}">Download</button>
+                    <button type="submit" name="view" id="view">Download</button>
                   </form>
                 </td>
 

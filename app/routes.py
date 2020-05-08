@@ -132,6 +132,9 @@ def home():
 
 @app.route("/download_file/<file_dir>", methods=["GET"])
 def download_file(file_dir):
+    f = base64.b64decode(file_dir)
+    file_dir = f.decode()
+
     return send_file(file_dir, as_attachment = True)
 
 
@@ -142,18 +145,12 @@ def view_file(file_dir, file_info):
     url = f.decode()
 
     #check to make sure temp is clean, otherwise delete all exisiting files.
-
-    
     path = os.path.join(app.root_path, "static\\temp")
     os.chdir(path)
     filenames = os.listdir()
     for file in filenames:
         os.remove(path + "\\" + file)
     
-    
-
-
-
     #copy folder into temp folder since cant server static images from C:\ only from static folder
     _, file_type, extension, file_name = make_tuple(file_info)
     

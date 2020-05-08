@@ -64,7 +64,7 @@ def walk_folder(directory):
             
         #file size in kb
             file_size = os.stat(file_path).st_size
-            file_size = int(file_size)/1024
+            file_size = int(file_size)/1024/1024
             file_size = math.ceil(file_size)
 
             #date modified

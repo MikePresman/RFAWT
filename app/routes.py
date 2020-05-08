@@ -140,22 +140,25 @@ def download_file(file_dir):
 def view_file(file_dir, file_info):
     f = base64.b64decode(file_dir)
     url = f.decode()
-    print("Here --- " + url)
-
-
 
     #check to make sure temp is clean, otherwise delete all exisiting files.
-    directory = os.getcwd() + r'\app\static\temp'
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            os.remove(directory + "\\" + file)
+
+    
+    path = os.path.join(app.root_path, "static\\temp")
+    os.chdir(path)
+    filenames = os.listdir()
+    for file in filenames:
+        os.remove(path + "\\" + file)
+    
+    
+
+
 
     #copy folder into temp folder since cant server static images from C:\ only from static folder
     _, file_type, extension, file_name = make_tuple(file_info)
     
     
     new_dir = copy(url, app.root_path + "/static/temp")
-    print(new_dir)
     
 
     #check to make sure is viewable type

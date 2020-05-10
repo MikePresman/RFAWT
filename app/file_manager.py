@@ -52,7 +52,11 @@ def viewable_file_type(filename) -> tuple:
 def walk_folder(directory):
     directory_info = []
     os.chdir(directory)
-    filenames = os.listdir()
+    
+    try:
+        filenames = os.listdir()
+    except Exception as e:
+        return
 
     #file handling
     for filename in filenames:

@@ -88,6 +88,13 @@ def pc_access(pc_name):
     if pc_name.lower() == "local":
         directory = walk_folder("C:/")
         return render_template("home.html", name = "debug mode, put user.username after", info = directory)
+    else: #pc on LAN
+        pc = LocalNetwork.query.filter_by(id = int(pc_name)).first()
+        ip = pc.ip_addr
+        port = pc.port
+        task = "view"
+        directory = get_remote_dir(ip, port, task)
+        return render_template("home.html", name = "debug mode, put user.username after", info = directory)
 
 
     #MAKE IT JUST LIKE FILE EXPLORER, DONT HAVE TO HAVE DROP DOWN BOX BUT JUST KEEP CLICKING ON NEXT FOLDER
@@ -95,6 +102,23 @@ def pc_access(pc_name):
     #BUT FIRST NEED TO ESTABLISH SOCKET CONNECTION IF PC_NAME IS NOT LOCAL
 
     return "Hello World"
+
+def get_remote_dir(ip_addr, port,  task):
+    HOST = str(ip_addr) #this is the IP we connect to
+    PORT = int(port)    #this is the port we connect to  
+    data = None
+    
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        s.sendall(task.encode('utf-8'))
+        
+        data = s.recv(5012) #could potential buffer overflow here but we'll assume 5012 is big enough
+        f = data.decode("utf-8")
+        f = ast.literal_eval(f) #converting string to dictionary to pass to template
+        return f
+        
+
+
 
 @app.route("/pc-folder/<folder>", methods = ["GET"])
 def pc_access_folder(folder):
@@ -137,8 +161,6 @@ def download_file(file_dir):
 
     return send_file(file_dir, as_attachment = True)
 
-
-#from scratch
 @app.route("/view_file/<file_dir>/<file_info>", methods=["GET"])
 def view_file(file_dir, file_info):
     f = base64.b64decode(file_dir)
@@ -164,7 +186,6 @@ def view_file(file_dir, file_info):
 
     return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
 
-
 @app.route("/remote_view_file/<file_name>/", methods = ["POST","GET"])
 def remote_view_file(file_name):
     info = request.form.get("view")
@@ -174,16 +195,8 @@ def remote_view_file(file_name):
     data = None
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
-        #sending data to server to get the file we want
         message = "GET$*$" + str(info)
         s.sendall(message.encode('utf-8'))
-        
-
-
-        #only getting a quarter of the image        
-        #recieving the file back
-        
-    
         
         #read how send_file in flask is implemented
         path = "B:/Downloads/file.pdf"
@@ -220,8 +233,6 @@ def remote_view_file(file_name):
     return redirect(url_for("home"))
 
 
-
-
 #make this is a paramterized URL with the computer name
 @app.route("/get/<message>", methods = ["GET"])
 def get_dir_info(message):
@@ -232,7 +243,7 @@ def get_dir_info(message):
         s.connect((HOST, PORT))
         s.sendall(message.encode('utf-8'))
         
-        #buffer bug, try compressing it first
+        
         data = s.recv(5012)
         #flask --run host = 0.0.0.0
         f = data.decode("utf-8") # WE GET STRING HERE, NEED TO CONVERT TO DICTIONARY FOR THE TEMPLATE

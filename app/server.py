@@ -13,7 +13,7 @@
 
 import socket
 import os
-from file_manager import walk_root_folder
+from file_manager import walk_root_folder, walk_folder
 import json
 import sys
 import zlib
@@ -109,7 +109,7 @@ def server():
                     if data.decode('utf-8') == "exit":
                         sys.exit()
                     if data.decode("utf-8") == "view":
-                        new_data = str(walk_root_folder("C:\\Users\\Mike\\Downloads")).encode("utf-8")
+                        new_data = str(walk_folder("C:\\")).encode("utf-8")
                         conn.sendall(new_data)
                 conn, addr = s.accept() #accept next connection
                 

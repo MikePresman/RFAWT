@@ -82,12 +82,6 @@ def dashboard():
     pcs_on_network = LocalNetwork.query.all()
     return render_template("dashboard.html", pcs = pcs_on_network)
 
-
-
-
-
-
-
 @app.route("/pc-access/<pc_name>/<folder>", methods = ["GET"])
 def pc_access(pc_name, folder):
     if pc_name.lower() == "local":
@@ -114,28 +108,10 @@ def pc_access(pc_name, folder):
 
         directory = get_remote_dir(ip, port, task)
         session['LOCAL'] = False
-        return render_template("home.html", name = "debug mode, put user.username after",  pc_name = pc_name, info = directory)
+        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def get_remote_dir(ip_addr, port,  task):
+def get_remote_dir(ip_addr, port, task):
     HOST = str(ip_addr) #this is the IP we connect to
     PORT = int(port)    #this is the port we connect to  
     data = None
@@ -150,8 +126,7 @@ def get_remote_dir(ip_addr, port,  task):
         return f
         
 
-
-@app.route("/getReady/<id>", methods = ["POST","GET"])
+@app.route("/check-status/<id>", methods = ["POST","GET"])
 def check_if_ready(id):
     pc_info = LocalNetwork.query.filter_by(id = int(id)).first()
     print(pc_info.ip_addr)
@@ -185,45 +160,83 @@ def download_file(file_dir):
 
     return send_file(file_dir, as_attachment = True)
 
-@app.route("/view_file/<file_dir>/<file_info>", methods=["GET"])
-def view_file(file_dir, file_info):
-    f = base64.b64decode(file_dir)
-    url = f.decode()
-
-    if (session['LOCAL'] is not True):
-        return url_for("dashboard")
-
-
+@app.route("/view_file/<pc_name>/<file_dir>/<file_info>", methods=["GET"])
+def view_file(pc_name, file_dir, file_info):
     #check to make sure temp is clean, otherwise delete all exisiting files.
     path = os.path.join(app.root_path, "static\\temp")
     os.chdir(path)
     filenames = os.listdir()
     for file in filenames:
         os.remove(path + "\\" + file)
-    
-    #copy folder into temp folder since cant server static images from C:\ only from static folder
-    _, file_type, extension, file_name = make_tuple(file_info)
-    
-    
-    new_dir = copy(url, app.root_path + "/static/temp")
-    
 
-    #check to make sure is viewable type
-    if _ is False:
-        return redirect(url_for('home'))
+    #decoding the file directory
+    f = base64.b64decode(file_dir)
+    url = f.decode()
+
+    #file info parameter unpacking
+    _, file_type, extension, file_name = make_tuple(file_info)
+
+    #handling remote file viewing, make sure to check first that file_info has it as a viewable file type to not waste time downloading if not even viewable
+    if (pc_name != "local"):
+        pc = LocalNetwork.query.filter_by(id = int(pc_name)).first()
+        ip = pc.ip_addr
+        port = pc.port
+        download_remote_file(ip, port, url, file_info)
+        
+    else:
+        #copy folder into temp folder since cant server static images from C:\ only from static folder
+        new_dir = copy(url, app.root_path + "/static/temp")
+        #check to make sure is viewable type
+        if _ is False:
+            return redirect(url_for('home'))
 
     return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
 
+
+
+def download_remote_file(ip, port, file_dir, file_info):
+    HOST = ip #this is the IP we connect to
+    PORT = port    #this is the port we connect to   
+    _, file_type, extension, file_name = make_tuple(file_info)
+    data = None
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        message = "GET$*$" + str(file_dir)
+        s.sendall(message.encode('utf-8'))
+
+        path = app.root_path + "/static/temp/" + file_name
+        f = open(path, "wb")
+        
+        data = s.recv(1024)
+        while data:
+            if data == b'DONE':
+                break
+            if data[-4:] == b'DONE':
+                data_to_write = data[:len(data) - 4]
+                f.write(data_to_write)
+                break
+            print(data)
+            f.write(data)
+            data = s.recv(1024)
+        f.close()
+    
+    return path
+
+
+#ORIGINAL IMPLEMENTATION, PASS FILE_PATH AND SIMPLY GET IT
 @app.route("/remote_view_file/<file_name>/", methods = ["POST","GET"])
 def remote_view_file(file_name):
-    info = request.form.get("view")
+    f = base64.b64decode(file_name)
+    url = f.decode()
 
+    
     HOST = '192.168.0.17' #this is the IP we connect to
     PORT = 65432    #this is the port we connect to   
     data = None
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
-        message = "GET$*$" + str(info)
+        message = "GET$*$" + str(url)
         s.sendall(message.encode('utf-8'))
         
         #read how send_file in flask is implemented

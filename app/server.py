@@ -70,7 +70,8 @@ def server():
                         file_path = split_data[1]
                 except Exception as e:
                     pass
-
+                
+            
 
                 #get file here and send it over
                 if file_path is not None:
@@ -85,24 +86,6 @@ def server():
                     print("Finished")
                     conn.sendall(b"DONE")
                     
-
-
-                    '''V1 WORKING
-                           if file_path is not None:
-                    file_to_send = open(file_path, "rb+")
-                    data_to_send = file_to_send.read(1024)
-                    while (data_to_send):
-                        print(data_to_send)
-                        print("---------------------")
-                        conn.send(data_to_send)
-                        data_to_send = file_to_send.read(1024)
-                    file_to_send.close()
-                    print("Finished")
-                    conn.shutdown(2)
-                    conn.close()
-                    return
-                    
-                    '''
                     
                 
 

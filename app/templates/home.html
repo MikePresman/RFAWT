@@ -40,7 +40,7 @@
 
                 <!-- VIEW -->
                 {%if each[5][0] == true %}
-                <td><a href="{{url_for('view_file', file_dir = each[6], file_info=each[5])}}">View</td>
+                <td><a href="{{url_for('view_file', pc_name = pc_name, file_dir = each[6], file_info=each[5])}}">View</td>
                 {%else%}
                 <td>N/A</td>
                 {%endif%}

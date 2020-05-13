@@ -103,6 +103,8 @@ def pc_access(pc_name, folder):
             task = "VIEW~~C:\\"
         else:
             f = base64.b64decode(folder)
+
+
             url = f.decode()
             task = "VIEW~~" + url
 
@@ -221,6 +223,7 @@ def download_remote_file(ip, port, file_dir, file_info):
             data = s.recv(1024)
         f.close()
     
+    
     return path
 
 
@@ -229,6 +232,8 @@ def download_remote_file(ip, port, file_dir, file_info):
 def remote_view_file(file_name):
     f = base64.b64decode(file_name)
     url = f.decode()
+
+    
 
     
     HOST = '192.168.0.17' #this is the IP we connect to

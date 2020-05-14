@@ -48,13 +48,12 @@ implement search bar for searching specific directories
 
 
 ######################TODO
-#implement view and download seperation from remote
-#implement a way to turn off server
-#add click commands for registration key and users
 #add search for any path
 #add path tree as moving on
 #remove /home page and replace with /dashboard
 #create a settings page where can automatically set to go to local
+#implement a way to turn off server
+#add click commands for registration key and users
 #try on mac
 #implement a way to turn off server
 

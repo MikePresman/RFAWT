@@ -46,10 +46,24 @@ implement search bar for searching specific directories
 
 
 
-<!-- DOWNLOAD -->
-                <td>
-                  <form method="POST" action="{{url_for('remote_view_file', file_name = each[6])}}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                    <button type="submit" name="view" id="view" value="{{each[0]}}$*${{each[5]}}">Download</button>
-                  </form>
-                </td>
+
+######################TODO
+#implement view and download seperation from remote
+#implement a way to turn off server
+#add click commands for registration key and users
+#add search for any path
+#add path tree as moving on
+#remove /home page and replace with /dashboard
+#create a settings page where can automatically set to go to local
+#try on mac
+#implement a way to turn off server
+
+
+
+----
+Finish Lan-explorer
+Read JS Book and Java Docs
+Write JS Poker and Java App
+Study DS&A or Concurrency
+Learn C or Spring
+Packet Sniffer, Audio Fingerprinting, or another Java Based App with Js frontend

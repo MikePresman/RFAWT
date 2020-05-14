@@ -21,24 +21,7 @@ import requests
 import io
 import struct
 
-def send_folder_data(conn):
-    data = walk_root_folder()
-    s = json.dumps(data).encode('utf-8')
-    conn.send(s)
 
-
-#NEED TO RESTART SERVER EVERYTIME MAKING CHANGES
-
-
-#check if folder lan-explorer exists, if it doesnt make it under C:\
-'''
-root_dir = "C:\\LAN_Public"
-if os.path.exists(root_dir) is False:
-    os.mkdir(root_dir)
-else:
-    print("Local Network Directory Exists")
-os.chdir(root_dir)
-'''
 
 def server():
     #start server connection
@@ -70,9 +53,8 @@ def server():
                         file_path = split_data[1]
                 except Exception as e:
                     pass
-                
-            
 
+            
                 #get file here and send it over
                 if file_path is not None:
                     file_to_send = open(file_path, "rb+")

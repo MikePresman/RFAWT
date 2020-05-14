@@ -10,7 +10,6 @@ import json
 import zlib
 import sys
 from datetime import datetime
-
 from ast import literal_eval as make_tuple
 from shutil import copy
 import os
@@ -103,15 +102,12 @@ def pc_access(pc_name, folder):
             task = "VIEW~~C:\\"
         else:
             f = base64.b64decode(folder)
-
-
             url = f.decode()
             task = "VIEW~~" + url
 
         directory = get_remote_dir(ip, port, task)
         session['LOCAL'] = False
         return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory)
-
 
 def get_remote_dir(ip_addr, port, task):
     HOST = str(ip_addr) #this is the IP we connect to
@@ -127,7 +123,6 @@ def get_remote_dir(ip_addr, port, task):
         f = ast.literal_eval(f) #converting string to dictionary to pass to template
         return f
         
-
 @app.route("/check-status/<id>", methods = ["POST","GET"])
 def check_if_ready(id):
     pc_info = LocalNetwork.query.filter_by(id = int(id)).first()
@@ -155,10 +150,23 @@ def home():
     #user = User.query.filter_by(id=current_user.id).first()
     return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
 
-@app.route("/download_file/<file_dir>", methods=["GET"])
-def download_file(file_dir):
+@app.route("/download_file/<pc_name>/<file_dir>/<file_info>", methods=["GET"])
+def download_file(pc_name, file_dir, file_info):
+    #check to make sure temp is clean, otherwise delete all exisiting files.
+    path = os.path.join(app.root_path, "static\\temp")
+    os.chdir(path)
+    filenames = os.listdir()
+    for file in filenames:
+        os.remove(path + "\\" + file)
+
     f = base64.b64decode(file_dir)
     file_dir = f.decode()
+    
+    if (pc_name != "local"):
+        pc = LocalNetwork.query.filter_by(id = int(pc_name)).first()
+        ip = pc.ip_addr
+        port = pc.port
+        file_dir = download_remote_file(ip, port, file_dir, file_info)
 
     return send_file(file_dir, as_attachment = True)
 
@@ -180,10 +188,13 @@ def view_file(pc_name, file_dir, file_info):
 
     #handling remote file viewing, make sure to check first that file_info has it as a viewable file type to not waste time downloading if not even viewable
     if (pc_name != "local"):
-        pc = LocalNetwork.query.filter_by(id = int(pc_name)).first()
-        ip = pc.ip_addr
-        port = pc.port
-        download_remote_file(ip, port, url, file_info)
+        if _ is True:
+            pc = LocalNetwork.query.filter_by(id = int(pc_name)).first()
+            ip = pc.ip_addr
+            port = pc.port
+            download_remote_file(ip, port, url, file_info)
+        else:
+            return request.referrer
         
     else:
         #copy folder into temp folder since cant server static images from C:\ only from static folder
@@ -193,8 +204,6 @@ def view_file(pc_name, file_dir, file_info):
             return redirect(url_for('home'))
 
     return render_template("view.html", file_dir = "temp/" + file_name, file_type = file_type, extension = extension)
-
-
 
 def download_remote_file(ip, port, file_dir, file_info):
     HOST = ip #this is the IP we connect to
@@ -221,61 +230,10 @@ def download_remote_file(ip, port, file_dir, file_info):
             print(data)
             f.write(data)
             data = s.recv(1024)
-        f.close()
-    
-    
+        f.close()    
     return path
 
-
-#ORIGINAL IMPLEMENTATION, PASS FILE_PATH AND SIMPLY GET IT
-@app.route("/remote_view_file/<file_name>/", methods = ["POST","GET"])
-def remote_view_file(file_name):
-    f = base64.b64decode(file_name)
-    url = f.decode()
-
-    
-
-    
-    HOST = '192.168.0.17' #this is the IP we connect to
-    PORT = 65432    #this is the port we connect to   
-    data = None
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-        message = "GET$*$" + str(url)
-        s.sendall(message.encode('utf-8'))
-        
-        #read how send_file in flask is implemented
-        path = "B:/Downloads/file.pdf"
-        #THIS WORKS
-        f = open(path, "wb")
-        
-        data = s.recv(1024)
-        while data:
-            if data == b'DONE':
-                break
-            if data[-4:] == b'DONE':
-                data_to_write = data[:len(data) - 4]
-                f.write(data_to_write)
-                break
-            print(data)
-            f.write(data)
-            data = s.recv(1024)
-        f.close()
-    
-        
-        '''V1 WORKING CORRESPONDING
-         f = open("/Users/mike/Downloads/picture.jpg", "wb")
-        
-        data = s.recv(1024)
-        while data:
-            print(data)
-            f.write(data)
-            data = s.recv(1024)
-        f.close()
-        '''
-    return redirect(url_for("home"))
-
-#make this is a paramterized URL with the computer name
+#change this to /shutdown/<ip>/ need admin privilleges
 @app.route("/get/<message>", methods = ["GET"])
 def get_dir_info(message):
     HOST = '192.168.0.17' #this is the IP we connect to

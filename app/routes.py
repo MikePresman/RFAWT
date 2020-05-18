@@ -92,8 +92,12 @@ def pc_access(pc_name, folder):
         else:
             f = base64.b64decode(folder)
             url = f.decode()
+            print("url")
+            print(url)
             directory = walk_folder(url)
             
+
+            ##TODO
             ##file tree
             directory_tree = url.split("\\")
             updated_tree = []
@@ -103,16 +107,18 @@ def pc_access(pc_name, folder):
                 updated_tree.append([url_path, each])
 
             dir_to_modify = url.split("\\")
-            print(dir_to_modify)
             modified_dir = ""
-            for each in dir_to_modify:
-                modified_dir = modified_dir + each + "/"
-            print(modified_dir)
+            for count, each in enumerate(dir_to_modify):
+                if count != len(dir_to_modify) - 1:
+                    modified_dir = modified_dir + each + "/"
+                else:
+                    modified_dir = modified_dir + each
+                    
             b = str.encode(modified_dir)
             dir_ = base64.b64encode(b)
-            ##end of file tree
-        
+            
 
+            ##end of file tree
         session['LOCAL'] = True  
     
         return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, current_dir = dir_, tree = updated_tree, )
@@ -129,6 +135,8 @@ def pc_access(pc_name, folder):
             task = "VIEW~~" + url
 
         ##file tree
+        
+        
         directory_tree = url.split("\\")
         updated_tree = []
         for each in directory_tree:
@@ -137,14 +145,16 @@ def pc_access(pc_name, folder):
             updated_tree.append(each)
         
         dir_to_modify = url.split("\\")
-        print(dir_to_modify)
         modified_dir = ""
         for each in dir_to_modify:
-            modified_dir = modified_dir + each + "/"
+            if count != len(dir_to_modify) - 1:
+                modified_dir = modified_dir + each + "/"
+            else:
+                modified_dir = modified_dir + each
 
-        print(modified_dir)
         b = str.encode(modified_dir)
         dir_ = base64.b64encode(b)
+        
         ##end of file tree
 
         directory = get_remote_dir(ip, port, task)
@@ -164,17 +174,22 @@ def pc_access_tree(pc_name, file_dir, hard_stop):
     f = base64.b64decode(hard_stop)
     stop = f.decode()
 
+
     directory_to_iter = url.split("/")
-    print(directory_to_iter)
     directory = ""
     for each in directory_to_iter:
         if each != stop:
             directory = directory + each + "/"
-    
+        else:
+            directory = directory + each + "/"
+            break
+    print(directory)
 
     b = str.encode(directory)
     dir_ = base64.b64encode(b)
+    
 
+    
 
 
     return redirect(url_for("pc_access", pc_name = pc_name, folder = dir_))

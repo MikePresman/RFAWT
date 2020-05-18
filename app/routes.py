@@ -86,14 +86,26 @@ def pc_access(pc_name, folder):
     if pc_name.lower() == "local":
         directory = None
         if folder == "root":
-            directory = walk_folder("C:/")
+            directory = walk_folder("C:\\")
+            updated_tree = []
         else:
             f = base64.b64decode(folder)
             url = f.decode()
             directory = walk_folder(url)
-        session['LOCAL'] = True
-        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory)
-    else:
+            
+        
+            directory_tree = url.split("\\")
+            updated_tree = []
+            for each in directory_tree:
+                b = str.encode(each)
+                url_path = base64.b64encode(b)
+                updated_tree.append([url_path, each])
+        print(updated_tree)
+
+        session['LOCAL'] = True  
+    
+        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, current_dir = folder, tree = updated_tree, )
+    else: #non local pc
         pc = LocalNetwork.query.filter_by(id = int(pc_name)).first()
         ip = pc.ip_addr
         port = pc.port
@@ -105,9 +117,41 @@ def pc_access(pc_name, folder):
             url = f.decode()
             task = "VIEW~~" + url
 
+        directory_tree = url.split("\\")
+        updated_tree = []
+        for each in directory_tree:
+            b = str.encode(each)
+            url_path = base64.b64encode(b)
+            updated_tree.append(each)
+
         directory = get_remote_dir(ip, port, task)
         session['LOCAL'] = False
-        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory)
+        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, tree = updated_tree, current_dir = folder)
+
+
+@app.route("/pc-access-tree/<pc_name>/<file_dir>/<hard_stop>", methods = ["GET"])
+def pc_access_tree(pc_name, file_dir, hard_stop):
+    #file_dir decode
+    f = base64.b64decode(file_dir)
+    url = f.decode()
+    
+    #hard_stop decode
+    f = base64.b64decode(hard_stop)
+    stop = f.decode()
+
+
+    print(url)
+    print(stop)
+
+
+
+    return "hi"
+
+    return redirect(url_for("pc_access", pc_name = pc_name, folder = directory_to_go_to))
+
+
+
+
 
 @app.route("/pc-access-search", methods = ["POST"])
 def pc_access_search():

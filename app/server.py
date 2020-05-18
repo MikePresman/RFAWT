@@ -1,16 +1,5 @@
 #!/usr/bin/env python3
-
-
-#output ip and socket
-#check to make sure correct operating system
-#check if folder exists in C drive
-#connect this endpoint to the head
-#the head adds this server to its database as a list to try
-
-
-#then work on remotely seeing all files on client pc (through server) and fetching them for download
-
-
+#this files requires file_manager.py
 import socket
 import os
 from file_manager import walk_root_folder, walk_folder
@@ -20,8 +9,6 @@ import zlib
 import requests
 import io
 import struct
-
-
 
 def server():
     #start server connection
@@ -68,9 +55,6 @@ def server():
                     print("Finished")
                     conn.sendall(b"DONE")
                     
-                    
-                
-
                 if data:
                     action = None
                     try:

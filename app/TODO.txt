@@ -1,4 +1,4 @@
-This will serve as an endpoint.
+#This will serve as an endpoint.
 Users will go to {ip_addr}:{port} and login to get access to end point
 
 
@@ -48,9 +48,10 @@ implement search bar for searching specific directories
 
 
 ######################TODO
-#add search for any path
+#add search for any path - COMPLETE
 #add path tree as moving on
 #remove /home page and replace with /dashboard
+#implement folder download - download entire contents of folder
 #create a settings page where can automatically set to go to local
 #implement a way to turn off server
 #add click commands for registration key and users

@@ -59,10 +59,3 @@ implement search bar for searching specific directories
 
 
 
-----
-Finish Lan-explorer
-Read JS Book and Java Docs
-Write JS Poker and Java App
-Study DS&A or Concurrency
-Learn C or Spring
-Packet Sniffer, Audio Fingerprinting, or another Java Based App with Js frontend

@@ -109,6 +109,16 @@ def pc_access(pc_name, folder):
         session['LOCAL'] = False
         return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory)
 
+@app.route("/pc-access-search", methods = ["POST"])
+def pc_access_search():
+    pc_name = request.values.get("pc_name")
+    search = request.values.get("search")  
+
+    b = str.encode(search)
+    url_path = base64.b64encode(b)
+
+    return redirect(url_for("pc_access", pc_name = pc_name, folder = url_path))
+
 def get_remote_dir(ip_addr, port, task):
     HOST = str(ip_addr) #this is the IP we connect to
     PORT = int(port)    #this is the port we connect to  
@@ -236,26 +246,18 @@ def download_remote_file(ip, port, file_dir, file_info):
 #change this to /shutdown/<ip>/ need admin privilleges
 @app.route("/get/<message>", methods = ["GET"])
 def get_dir_info(message):
-    HOST = '192.168.0.17' #this is the IP we connect to
+    HOST = '192.168.0.20' #this is the IP we connect to
     PORT = 65432    #this is the port we connect to   
     data = None
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
         s.sendall(message.encode('utf-8'))
         
-        
         data = s.recv(5012)
         #flask --run host = 0.0.0.0
-        f = data.decode("utf-8") # WE GET STRING HERE, NEED TO CONVERT TO DICTIONARY FOR THE TEMPLATE
-    
-        f = ast.literal_eval(f) #converting string to dictionary to pass to template
-        
-
-        #after buffer bug is fixed work on remote_view_file to get files across to remote client
-        
-
-        #data = json.loads(data.decode("utf-8"))
-    
+        f = data.decode("utf-8")
+        f = ast.literal_eval(f)
+            
     return render_template("home.html", name = "debug mode, put user.username after", info = f)
 
 @app.route("/child-node-setup", methods = ["GET", "POST"])

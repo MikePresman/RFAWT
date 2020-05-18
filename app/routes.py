@@ -88,23 +88,34 @@ def pc_access(pc_name, folder):
         if folder == "root":
             directory = walk_folder("C:\\")
             updated_tree = []
+            dir_ = ""
         else:
             f = base64.b64decode(folder)
             url = f.decode()
             directory = walk_folder(url)
             
-        
+            ##file tree
             directory_tree = url.split("\\")
             updated_tree = []
             for each in directory_tree:
                 b = str.encode(each)
                 url_path = base64.b64encode(b)
                 updated_tree.append([url_path, each])
-        print(updated_tree)
+
+            dir_to_modify = url.split("\\")
+            print(dir_to_modify)
+            modified_dir = ""
+            for each in dir_to_modify:
+                modified_dir = modified_dir + each + "/"
+            print(modified_dir)
+            b = str.encode(modified_dir)
+            dir_ = base64.b64encode(b)
+            ##end of file tree
+        
 
         session['LOCAL'] = True  
     
-        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, current_dir = folder, tree = updated_tree, )
+        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, current_dir = dir_, tree = updated_tree, )
     else: #non local pc
         pc = LocalNetwork.query.filter_by(id = int(pc_name)).first()
         ip = pc.ip_addr
@@ -117,18 +128,32 @@ def pc_access(pc_name, folder):
             url = f.decode()
             task = "VIEW~~" + url
 
+        ##file tree
         directory_tree = url.split("\\")
         updated_tree = []
         for each in directory_tree:
             b = str.encode(each)
             url_path = base64.b64encode(b)
             updated_tree.append(each)
+        
+        dir_to_modify = url.split("\\")
+        print(dir_to_modify)
+        modified_dir = ""
+        for each in dir_to_modify:
+            modified_dir = modified_dir + each + "/"
+
+        print(modified_dir)
+        b = str.encode(modified_dir)
+        dir_ = base64.b64encode(b)
+        ##end of file tree
 
         directory = get_remote_dir(ip, port, task)
         session['LOCAL'] = False
-        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, tree = updated_tree, current_dir = folder)
+        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, tree = updated_tree, current_dir = dir_)
 
 
+
+##TODO
 @app.route("/pc-access-tree/<pc_name>/<file_dir>/<hard_stop>", methods = ["GET"])
 def pc_access_tree(pc_name, file_dir, hard_stop):
     #file_dir decode
@@ -139,15 +164,20 @@ def pc_access_tree(pc_name, file_dir, hard_stop):
     f = base64.b64decode(hard_stop)
     stop = f.decode()
 
+    directory_to_iter = url.split("/")
+    print(directory_to_iter)
+    directory = ""
+    for each in directory_to_iter:
+        if each != stop:
+            directory = directory + each + "/"
+    
 
-    print(url)
-    print(stop)
+    b = str.encode(directory)
+    dir_ = base64.b64encode(b)
 
 
 
-    return "hi"
-
-    return redirect(url_for("pc_access", pc_name = pc_name, folder = directory_to_go_to))
+    return redirect(url_for("pc_access", pc_name = pc_name, folder = dir_))
 
 
 

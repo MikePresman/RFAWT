@@ -51,16 +51,14 @@ implement search bar for searching specific directories
 #add search for any path - COMPLETE
 #add path tree as moving on - COMPLETE
 #remove /home page and replace with /dashboard - COMPLETE
+#work on shutdown route - COMPLETE
 
 
-#work on shutdown route
 #implement folder download - download entire contents of folder
-
 #setup login
 #implement a way to turn off server from server
 #add click commands for registration key and users
 #try on mac
 #implement a way to turn off server
-
 
 

@@ -17,9 +17,12 @@ import pickle
 import ast
 import base64
 
+
+
+
 @app.route("/", methods=["POST", "GET"])
 def index():
-    return redirect(url_for("home"))
+    return redirect(url_for("dashboard"))
     if current_user.is_authenticated:
         return redirect(url_for("dashboard"))
 
@@ -83,6 +86,7 @@ def dashboard():
 
 @app.route("/pc-access/<pc_name>/<folder>", methods = ["GET"])
 def pc_access(pc_name, folder):
+    url = ""
     if pc_name.lower() == "local":
         directory = None
         if folder == "root":
@@ -114,9 +118,8 @@ def pc_access(pc_name, folder):
                     modified_dir = modified_dir + each
             b = str.encode(modified_dir)
             dir_ = base64.b64encode(b)
-            
-
             ##end of file tree
+
         session['LOCAL'] = True  
     
         return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, current_dir = dir_, tree = updated_tree)
@@ -132,36 +135,26 @@ def pc_access(pc_name, folder):
             url = f.decode()
             task = "VIEW~~" + url
 
-
-
-
-        ##file tree        
+        
+        ##file tree
         directory_tree = url.split("\\")
         updated_tree = []
         for each in directory_tree:
             b = str.encode(each)
             url_path = base64.b64encode(b)
             updated_tree.append([url_path, each])
-        
+
+
         dir_to_modify = url.split("\\")
         modified_dir = ""
-        for each in dir_to_modify:
+        for count, each in enumerate(dir_to_modify):
             if count != len(dir_to_modify) - 1:
-                modified_dir = modified_dir + each + "/"
+                modified_dir = modified_dir + each + "\\"
             else:
                 modified_dir = modified_dir + each
-
         b = str.encode(modified_dir)
         dir_ = base64.b64encode(b)
-        
         ##end of file tree
-
-
-
-
-
-
-
 
         directory = get_remote_dir(ip, port, task)
         session['LOCAL'] = False
@@ -169,7 +162,6 @@ def pc_access(pc_name, folder):
 
 
 
-##TODO
 @app.route("/pc-access-tree/<pc_name>/<file_dir>/<hard_stop>", methods = ["GET"])
 def pc_access_tree(pc_name, file_dir, hard_stop):
     #file_dir decode
@@ -179,8 +171,6 @@ def pc_access_tree(pc_name, file_dir, hard_stop):
     #hard_stop decode
     f = base64.b64decode(hard_stop)
     stop = f.decode()
-
-    
 
     directory_to_iter = url.split("\\")
     directory = ""
@@ -193,16 +183,7 @@ def pc_access_tree(pc_name, file_dir, hard_stop):
 
     b = str.encode(directory)
     dir_ = base64.b64encode(b)
-    
-
-    
-
-
     return redirect(url_for("pc_access", pc_name = pc_name, folder = dir_))
-
-
-
-
 
 @app.route("/pc-access-search", methods = ["POST"])
 def pc_access_search():
@@ -223,7 +204,8 @@ def get_remote_dir(ip_addr, port, task):
         s.connect((HOST, PORT))
         s.sendall(task.encode('utf-8'))
         
-        data = s.recv(5012) #could potential buffer overflow here but we'll assume 5012 is big enough
+        ##TODO fix this
+        data = s.recv(7000) #could potential buffer overflow here but we'll assume 5012 is big enough
         f = data.decode("utf-8")
         f = ast.literal_eval(f) #converting string to dictionary to pass to template
         return f
@@ -240,6 +222,22 @@ def check_if_ready(id):
             return "Online"
     except Exception as e:        
         return "Offline"
+    
+
+@app.route("/shutdown/<pc_name>", methods = ["GET"])
+def shutdown_remote(pc_name):
+    pc_info = LocalNetwork.query.filter_by(id = int(pc_name)).first()
+    HOST = pc_info.ip_addr
+    PORT = pc_info.port
+    data = "exit"
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((HOST, PORT))
+            s.sendall(data.encode('utf-8'))
+            return redirect(url_for('dashboard'))
+    except ConnectionRefusedError as e:
+        return redirect(url_for('dashboard'))
+
 
 @app.route("/home", methods=["POST", "GET"])
 def home():
@@ -338,8 +336,9 @@ def download_remote_file(ip, port, file_dir, file_info):
         f.close()    
     return path
 
+'''
 #change this to /shutdown/<ip>/ need admin privilleges
-@app.route("/get/<message>", methods = ["GET"])
+@app.route("/shutdown/<message>", methods = ["GET"])
 def get_dir_info(message):
     HOST = '192.168.0.20' #this is the IP we connect to
     PORT = 65432    #this is the port we connect to   
@@ -354,9 +353,14 @@ def get_dir_info(message):
         f = ast.literal_eval(f)
             
     return render_template("home.html", name = "debug mode, put user.username after", info = f)
+'''
 
 @app.route("/child-node-setup", methods = ["GET", "POST"])
 def child_node_setup():
+    shutdown = request.form.get("shutdown")
+    if shutdown is not None:
+        return redirect(url_for('shutdown_remote', pc_name = shutdown))
+
     delete = request.form.get("delete")
     print(delete)
     all_pcs_on_network = LocalNetwork.query.all()

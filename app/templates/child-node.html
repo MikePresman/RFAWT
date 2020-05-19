@@ -26,6 +26,7 @@
             <a href="{{url_for('download_server')}}">Download Server Here</a>
         
     </div>
+  </form>
 
     <div class="table-responsive" id="sailorTableArea">
       <table class="table table-hover" width="100%">
@@ -38,6 +39,7 @@
                   <th>Port</th>
                   <th>Date Added</th>
                   <th>Delete</th>
+                  <th>Shutdown</th>
               </tr>
           </thead>
           <tbody>
@@ -49,16 +51,28 @@
                 <td>{{each.port}}</td>
                 <td>{{each.date_added}}</td>
                 <td>
-                  <button class = "btn-primary" name = "delete" value = {{each.id}}>
-                      Delete
-                  </button>
+                  <form method = "POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button class = "btn-primary btn-sm"" name = "delete" value = {{each.id}}>
+                        Delete
+                    </button>
+                  </form>
+                </td>
+
+                <td>
+                  <form method = "POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button class = "btn-danger btn-sm"  name = "shutdown" value = {{each.id}}>
+                        Shutdown
+                    </button>
+                  </form>
                 </td>
             </tr>                
               {%endfor%}
         </tbody>
     </table>
     </div>
-  </form>
+  
 
   </main>
   <!-- page-content" -->

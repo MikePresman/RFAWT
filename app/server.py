@@ -64,6 +64,7 @@ def server():
                     except Exception as e:
                         pass
 
+                    
                     if data.decode('utf-8') == "exit":
                         sys.exit()
                     if action is not None and action == "VIEW":

@@ -109,13 +109,16 @@ def pc_access(pc_name, folder):
 
         if folder == "root":
             task = "VIEW~~C:\\"
+            updated_tree = []
+            dir_ = ""
+            
         else:
             f = base64.b64decode(folder)
             url = f.decode()
             task = "VIEW~~" + url
         
-        #directory tree handler
-        dir_, updated_tree = directory_tree(url)
+            #directory tree handler
+            dir_, updated_tree = directory_tree(url)
 
         directory = get_remote_dir(ip, port, task)
         session['LOCAL'] = False
@@ -126,10 +129,11 @@ def directory_tree(url):
     directory_tree = url.split("\\")
     updated_tree = []
     for each in directory_tree:
+        if each == "":
+            continue
         b = str.encode(each)
         url_path = base64.b64encode(b)
         updated_tree.append([url_path, each])
-
 
     dir_to_modify = url.split("\\")
     modified_dir = ""
@@ -138,6 +142,7 @@ def directory_tree(url):
             modified_dir = modified_dir + each + "\\"
         else:
             modified_dir = modified_dir + each
+
     b = str.encode(modified_dir)
     dir_ = base64.b64encode(b)
     return (dir_, updated_tree)

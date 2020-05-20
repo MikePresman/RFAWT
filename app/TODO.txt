@@ -52,14 +52,20 @@ implement search bar for searching specific directories
 #add path tree as moving on - COMPLETE
 #remove /home page and replace with /dashboard - COMPLETE
 #work on shutdown route - COMPLETE
+#implement folder download - download entire contents of folder - COMPLETE (can only download zip)
 
-#implement folder download - download entire contents of folder
+
+
 #setup login
+#fix the recv directory
 
 
 #implement a way to turn off server from server
 #add click commands for registration key and users
 #try on mac
 #implement a way to turn off server
+
+v2
+#implement, make folder zip
 
 

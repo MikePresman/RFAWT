@@ -14,7 +14,7 @@
 
       
       {%for each in tree%}
-          <a href = "{{url_for('pc_access_tree', pc_name = pc_name, file_dir=current_dir, hard_stop = each[0])}}">{{each[1]}}</a>\
+          <a href = "{{url_for('pc_access_tree', pc_name = pc_name, file_dir=current_dir, hard_stop = each[0])}}">{{each[1]}}</a> \
       {%endfor%}
       
 
@@ -27,7 +27,7 @@
 
           <tr>
             <th>File/Folder Name</th>
-            <th>File/Folder Name</th>
+            <th>File/Folder Extension</th>
             <th>File Size</th>
             <th>Date Modified</th>
             <th>Download File</th>
@@ -41,7 +41,7 @@
             {%if each[0] == "file"%}
               <tr>
                 <td>{{each[2]}}</td>
-                <td>File</td>
+                <td>{{each[5][2]}}</td>
                 <td>{{each[3]}} Mb</td>
                 <td>{{each[4]}}</td>
 

@@ -124,7 +124,6 @@ def pc_access(pc_name, folder):
         session['LOCAL'] = False
         return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, tree = updated_tree, current_dir = dir_)
 
-
 def directory_tree(url):
     directory_tree = url.split("\\")
     updated_tree = []

@@ -55,9 +55,11 @@ implement search bar for searching specific directories
 #implement folder download - download entire contents of folder - COMPLETE (can only download zip)
 
 
+#fix the recv directory
+
 
 #setup login
-#fix the recv directory
+
 
 
 #implement a way to turn off server from server

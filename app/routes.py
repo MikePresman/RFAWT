@@ -286,11 +286,8 @@ def view_file(pc_name, file_dir, file_info):
 
 def download_remote_file(ip, port, file_dir, file_info):
     HOST = ip #this is the IP we connect to
-    PORT = port    #this is the port we connect to
-    try:
-        _, file_type, extension, file_name = make_tuple(file_info)
-    except ValueError as e:
-        _, extension = make_tuple(file_info)
+    PORT = port    #this is the port we connect to 
+    _, file_type, extension, file_name = make_tuple(file_info)
     data = None
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -298,7 +295,7 @@ def download_remote_file(ip, port, file_dir, file_info):
         message = "GET$*$" + str(file_dir)
         s.sendall(message.encode('utf-8'))
 
-        path = app.root_path + "/static/temp/file_temp" + "." + extension
+        path = app.root_path + "/static/temp/" + file_name
         f = open(path, "wb")
         
         data = s.recv(1024)

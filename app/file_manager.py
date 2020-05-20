@@ -45,7 +45,7 @@ def viewable_file_type(filename) -> tuple:
     elif file_extension in acceptable_video_file_types:
         return(True, "video", file_extension[1:], filename)
     else:
-        return(False, file_extension)
+        return(False, None, file_extension[1:], filename)
 
 
 

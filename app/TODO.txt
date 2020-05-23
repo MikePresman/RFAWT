@@ -56,18 +56,17 @@ implement search bar for searching specific directories
 
 
 #fix the recv directory
-
-
 #setup login
-
-
-
+#add error message page for search not found
 #implement a way to turn off server from server
 #add click commands for registration key and users
 #try on mac
 #implement a way to turn off server
 
+
 v2
 #implement, make folder zip
+
+https://portforward.com/networking/static-ip-windows-10.htm
 
 

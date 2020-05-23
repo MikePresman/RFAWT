@@ -186,10 +186,30 @@ def get_remote_dir(ip_addr, port, task):
         s.connect((HOST, PORT))
         s.sendall(task.encode('utf-8'))
         
+
+        data = s.recv(1024)
+
+        f = b''
+        while data:
+            if data == b'DONE':
+                f += data[:len(data) - 4]
+                break
+            if data[-4:] == b'DONE':
+                f = data[:len(data) - 4]
+                break
+            f += data
+            data = s.recv(1024)
+        
+        print(f)
+        f = f.decode("utf-8")
+        f = ast.literal_eval(f) #converting string to dictionary to pass to template
+        
+
+        '''
         ##TODO fix this
         data = s.recv(7000) #could potential buffer overflow here but we'll assume 5012 is big enough
-        f = data.decode("utf-8")
-        f = ast.literal_eval(f) #converting string to dictionary to pass to template
+        
+        '''
         return f
         
 @app.route("/check-status/<id>", methods = ["POST","GET"])

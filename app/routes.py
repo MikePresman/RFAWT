@@ -89,7 +89,7 @@ def register():
 @login_required
 def dashboard():
     pcs_on_network = LocalNetwork.query.all()
-    return render_template("dashboard.html", pcs = pcs_on_network)
+    return render_template("dashboard.html", name = user_logged_in.username, pcs = pcs_on_network)
 
 @app.route("/pc-access/<pc_name>/<folder>", methods = ["GET"])
 @login_required
@@ -381,7 +381,7 @@ def child_node_setup():
         return redirect(url_for("child_node_setup"))
     
 
-    return render_template("child-node.html", pcs = all_pcs_on_network)
+    return render_template("child-node.html", name = user_logged_in.username, pcs = all_pcs_on_network)
 
 @app.route("/download-server", methods = ["GET"])
 @login_required

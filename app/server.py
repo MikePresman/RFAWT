@@ -107,7 +107,7 @@ def server():
                 
                 
                 
-                
+    
                 
 
 if __name__ == "__main__":
@@ -115,12 +115,5 @@ if __name__ == "__main__":
 
                     
 
-
-
-
             
 #this is an endpoint
-#user startsup endpoint, adds the ip address in the web app
-#the web app then searches for all endpoints that are online (try and catch)
-#then when a user wants files from an endpoint, it maintains a connection with that endpoint until moving on to the next
-#endpoint should be an exe that runs in the background on a windows pc

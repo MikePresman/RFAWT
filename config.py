@@ -13,4 +13,4 @@ class Config(object):
 	MAIL_USE_SSL = False
 	MAIL_USERNAME = ''
 	MAIL_PASSWORD = ''
-	REGISTER_KEY = 1234
+	REGISTER_KEY = 10292929

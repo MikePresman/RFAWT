@@ -1,14 +1,26 @@
 {%include 'header.html'%}
 <!-- sidebar-wrapper  -->
 
+
+
 <main class="page-content">
-   
+  <font color = red>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul>
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+      </ul>
+      {%endif%}
+      {%endwith%}
+    </font>
 
         <!-- Search form -->
         <form method = "POST" action = "{{url_for('pc_access_search')}}" class="form-inline">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <i class="fas fa-search" aria-hidden="true"></i>
-          <input class="form-control form-control-sm ml-3 w-50" name="search" type="C:\Users\Admin\Documents" placeholder="Search" aria-label="...">
+          <input class="form-control form-control-sm ml-3 w-50" name="search" type="C:\Users\Admin\Documents" placeholder="Search Directory e.g. (C:\Users\Mike\Desktop)" aria-label="...">
           <input type = "hidden" value = {{pc_name}} name = "pc_name">
         </form>
 

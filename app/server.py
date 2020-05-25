@@ -67,6 +67,9 @@ def server():
                     
                     if data.decode('utf-8') == "exit":
                         sys.exit()
+
+
+                    #get_remote_dir    
                     if action is not None and action == "VIEW":
                         #break this up into a loop
                         new_data = str(walk_folder(URI)).encode("utf-8")
@@ -87,15 +90,10 @@ def server():
                             #if the newly allocated block size isnt too small, we send it
                             if (len(new_data[starting_point:ending_point]) >= 1024):
                                 data_to_send = new_data[starting_point:ending_point]
-                                print("BYTE FITS")
-                                print(data_to_send)
-                            #last block in the sequence
+                            #last block in the sequence that doesnt full fit 1024
                             else:
-                                print("BYTE DOESNT FIT")
                                 final_byte = 1024
                                 while(final_byte >= len(new_data[starting_point:ending_point])):
-                                    print("Final Byte")
-                                    print(final_byte)
                                     final_byte = final_byte - 1
                                     if final_byte == 0:
                                         break
@@ -105,11 +103,6 @@ def server():
                                 conn.sendall(b"DONE")
                                 flag = True
                                 break
-                            '''
-                            if flag is False:
-                                print("here")
-                                conn.sendall(b"DONE")
-                            '''
                 conn, addr = s.accept() #accept next connection
                 
                 

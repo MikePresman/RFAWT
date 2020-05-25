@@ -95,7 +95,15 @@ def pc_access(pc_name, folder):
         else:
             f = base64.b64decode(folder)
             url = f.decode()
-            directory = walk_folder(url)
+            try:
+                directory = walk_folder(url)
+            except FileNotFoundError as e:
+                b = str.encode("C:\\")
+                url_path = base64.b64encode(b)
+                flash("The searched directory path was not found")
+                return redirect(url_for("pc_access", pc_name = pc_name, folder = url_path))
+
+            
             
             #directory tree handler
             dir_, updated_tree = directory_tree(url)
@@ -185,8 +193,6 @@ def get_remote_dir(ip_addr, port, task):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
         s.sendall(task.encode('utf-8'))
-        
-
         data = s.recv(1024)
 
         f = b''
@@ -203,13 +209,7 @@ def get_remote_dir(ip_addr, port, task):
         print(f)
         f = f.decode("utf-8")
         f = ast.literal_eval(f) #converting string to dictionary to pass to template
-        
 
-        '''
-        ##TODO fix this
-        data = s.recv(7000) #could potential buffer overflow here but we'll assume 5012 is big enough
-        
-        '''
         return f
         
 @app.route("/check-status/<id>", methods = ["POST","GET"])

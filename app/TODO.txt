@@ -53,19 +53,23 @@ implement search bar for searching specific directories
 #remove /home page and replace with /dashboard - COMPLETE
 #work on shutdown route - COMPLETE
 #implement folder download - download entire contents of folder - COMPLETE (can only download zip)
+#fix the recv directory - COMPLETE
+#add error message page for search not found - COMPLETE
 
+Finish by wednesday
 
-#fix the recv directory
 #setup login
-#add error message page for search not found
 #implement a way to turn off server from server
 #add click commands for registration key and users
 #try on mac
-#implement a way to turn off server
+
 
 
 v2
+#add search for file in given Directory
 #implement, make folder zip
+
+
 
 https://portforward.com/networking/static-ip-windows-10.htm
 

@@ -18,6 +18,13 @@ import ast
 import base64
 from config import Config
 
+
+class LoggedInUser():
+    def __init__(self, id):
+        self.user_id = id
+        self.username = User.query.filter_by(id = id).first().username
+
+
 @app.route("/", methods=["POST", "GET"])
 def index():
     if current_user.is_authenticated:
@@ -36,12 +43,12 @@ def index():
                 
         remember_status = True if remember_me == "True" else False
         login_user(user, remember = remember_status)
+        global user_logged_in
+        user_logged_in = LoggedInUser(current_user.id)
 
         return redirect(url_for("dashboard"))
 
     return render_template("index.html")
-
-
 
 @app.route("/register", methods =["POST", "GET"])
 def register():
@@ -110,7 +117,7 @@ def pc_access(pc_name, folder):
             #directory tree handler
             dir_, updated_tree = directory_tree(url)
         session['LOCAL'] = True  
-        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, current_dir = dir_, tree = updated_tree)
+        return render_template("home.html", name = user_logged_in.username, pc_name = pc_name, info = directory, current_dir = dir_, tree = updated_tree)
 
     else: #non local pc
         pc = LocalNetwork.query.filter_by(id = int(pc_name)).first()
@@ -132,7 +139,7 @@ def pc_access(pc_name, folder):
 
         directory = get_remote_dir(ip, port, task)
         session['LOCAL'] = False
-        return render_template("home.html", name = "debug mode, put user.username after", pc_name = pc_name, info = directory, tree = updated_tree, current_dir = dir_)
+        return render_template("home.html", name = user_logged_in.username, pc_name = pc_name, info = directory, tree = updated_tree, current_dir = dir_)
 
 def directory_tree(url):
     directory_tree = url.split("\\")

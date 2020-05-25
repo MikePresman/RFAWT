@@ -6,15 +6,13 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
-from app.click_commands import test
-
+import click
 import os
 
 app = Flask(__name__)
 
-app.config.from_object(Config)
 
-app.cli.add_command(test)
+app.config.from_object(Config)
 
 db = SQLAlchemy(app)
 
@@ -25,6 +23,9 @@ login = LoginManager(app)
 #mail = Mail(app)
 
 csrf = CSRFProtect(app)
+
+
+
 
 
 

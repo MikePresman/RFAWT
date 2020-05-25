@@ -16,12 +16,10 @@ import os
 import pickle
 import ast
 import base64
-
-
+from config import Config
 
 @app.route("/", methods=["POST", "GET"])
 def index():
-    return redirect(url_for("dashboard"))
     if current_user.is_authenticated:
         return redirect(url_for("dashboard"))
 
@@ -42,6 +40,8 @@ def index():
         return redirect(url_for("dashboard"))
 
     return render_template("index.html")
+
+
 
 @app.route("/register", methods =["POST", "GET"])
 def register():
@@ -77,13 +77,15 @@ def register():
         return redirect(url_for("index"))
 
     return render_template("register.html")
-    
+
 @app.route("/dashboard", methods=["GET"])
+@login_required
 def dashboard():
     pcs_on_network = LocalNetwork.query.all()
     return render_template("dashboard.html", pcs = pcs_on_network)
 
 @app.route("/pc-access/<pc_name>/<folder>", methods = ["GET"])
+@login_required
 def pc_access(pc_name, folder):
     url = ""
     if pc_name.lower() == "local":
@@ -155,6 +157,7 @@ def directory_tree(url):
     return (dir_, updated_tree)
 
 @app.route("/pc-access-tree/<pc_name>/<file_dir>/<hard_stop>", methods = ["GET"])
+@login_required
 def pc_access_tree(pc_name, file_dir, hard_stop):
     #file_dir decode
     f = base64.b64decode(file_dir)
@@ -176,6 +179,7 @@ def pc_access_tree(pc_name, file_dir, hard_stop):
     return redirect(url_for("pc_access", pc_name = pc_name, folder = dir_))
 
 @app.route("/pc-access-search", methods = ["POST"])
+@login_required
 def pc_access_search():
     pc_name = request.values.get("pc_name")
     search = request.values.get("search")  
@@ -211,8 +215,9 @@ def get_remote_dir(ip_addr, port, task):
         f = ast.literal_eval(f) #converting string to dictionary to pass to template
 
         return f
-        
+
 @app.route("/check-status/<id>", methods = ["POST","GET"])
+@login_required
 def check_if_ready(id):
     pc_info = LocalNetwork.query.filter_by(id = int(id)).first()
     print(pc_info.ip_addr)
@@ -224,8 +229,9 @@ def check_if_ready(id):
             return "Online"
     except Exception as e:        
         return "Offline"
-    
+
 @app.route("/shutdown/<pc_name>", methods = ["GET"])
+@login_required  
 def shutdown_remote(pc_name):
     pc_info = LocalNetwork.query.filter_by(id = int(pc_name)).first()
     HOST = pc_info.ip_addr
@@ -240,6 +246,7 @@ def shutdown_remote(pc_name):
         return redirect(url_for('dashboard'))
 
 @app.route("/home", methods=["POST", "GET"])
+@login_required
 def home():
     '''
     if current_user.is_authenticated is False:
@@ -254,6 +261,7 @@ def home():
     return render_template("home.html", name = "debug mode, put user.username after", info = directory_info)
 
 @app.route("/download_file/<pc_name>/<file_dir>/<file_info>", methods=["GET"])
+@login_required
 def download_file(pc_name, file_dir, file_info):
     #check to make sure temp is clean, otherwise delete all exisiting files.
     path = os.path.join(app.root_path, "static\\temp")
@@ -274,6 +282,7 @@ def download_file(pc_name, file_dir, file_info):
     return send_file(file_dir, as_attachment = True)
 
 @app.route("/view_file/<pc_name>/<file_dir>/<file_info>", methods=["GET"])
+@login_required
 def view_file(pc_name, file_dir, file_info):
     #check to make sure temp is clean, otherwise delete all exisiting files.
     path = os.path.join(app.root_path, "static\\temp")
@@ -337,6 +346,7 @@ def download_remote_file(ip, port, file_dir, file_info):
     return path
 
 @app.route("/child-node-setup", methods = ["GET", "POST"])
+@login_required
 def child_node_setup():
     #shutdown server
     shutdown = request.form.get("shutdown")
@@ -367,6 +377,7 @@ def child_node_setup():
     return render_template("child-node.html", pcs = all_pcs_on_network)
 
 @app.route("/download-server", methods = ["GET"])
+@login_required
 def download_server():
     download_link = os.getcwd() + "\\app\\server.py" #make sure sending .exe
     return send_file(download_link, as_attachment = True)

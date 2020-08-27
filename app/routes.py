@@ -273,7 +273,13 @@ def home():
 def download_file(pc_name, file_dir, file_info):
     #check to make sure temp is clean, otherwise delete all exisiting files.
     path = os.path.join(app.root_path, "static" + os.sep + "temp")
-    os.chdir(path)
+    
+    try:
+        os.chdir(path)
+    except FileNotFoundError:
+        os.mkdir(path)
+        os.chdir(path)
+    
     filenames = os.listdir()
     for file in filenames:
         os.remove(path + os.sep + file)

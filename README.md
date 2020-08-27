@@ -19,3 +19,4 @@ Remote File Access Web Tool
 
 #V2.0
 1. Supporting WSL
+2. Began OSX support

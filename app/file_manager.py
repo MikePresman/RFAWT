@@ -85,10 +85,13 @@ def walk_folder(directory):
 
 
     for f in os.scandir(directory):
-        if f.is_dir():
-            b = str.encode(f.path)
-            url_path = base64.b64encode(b)
-            directory_info.append(["folder", f.path, url_path])
+        try:
+            if f.is_dir():
+                b = str.encode(f.path)
+                url_path = base64.b64encode(b)
+                directory_info.append(["folder", f.path, url_path])
+        except Exception:
+            continue
     
     '''
     pp = pprint.PrettyPrinter(indent=4)

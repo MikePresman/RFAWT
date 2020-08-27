@@ -98,7 +98,8 @@ def pc_access(pc_name, folder):
     if pc_name.lower() == "local":
         directory = None
         if folder == "root":
-            directory = walk_folder("C:\\")
+            
+            directory = walk_folder(str(os.path.dirname("C:") + os.sep))
             updated_tree = []
             dir_ = ""
         else:
@@ -117,7 +118,7 @@ def pc_access(pc_name, folder):
             #directory tree handler
             dir_, updated_tree = directory_tree(url)
         session['LOCAL'] = True  
-        return render_template("home.html", name = user_logged_in.username, pc_name = pc_name, info = directory, current_dir = dir_, tree = updated_tree)
+        return render_template("home.html", name = user_logged_in.username, pc_name = pc_name, info = directory, current_dir = dir_, tree = updated_tree, path_seperator = os.sep)
 
     else: #non local pc
         pc = LocalNetwork.query.filter_by(id = int(pc_name)).first()
@@ -139,10 +140,10 @@ def pc_access(pc_name, folder):
 
         directory = get_remote_dir(ip, port, task)
         session['LOCAL'] = False
-        return render_template("home.html", name = user_logged_in.username, pc_name = pc_name, info = directory, tree = updated_tree, current_dir = dir_)
+        return render_template("home.html", name = user_logged_in.username, pc_name = pc_name, info = directory, tree = updated_tree, current_dir = dir_, path_seperator = os.sep)
 
 def directory_tree(url):
-    directory_tree = url.split("\\")
+    directory_tree = url.split(os.sep)
     updated_tree = []
     for each in directory_tree:
         if each == "":
@@ -151,11 +152,11 @@ def directory_tree(url):
         url_path = base64.b64encode(b)
         updated_tree.append([url_path, each])
 
-    dir_to_modify = url.split("\\")
+    dir_to_modify = url.split(os.sep)
     modified_dir = ""
     for count, each in enumerate(dir_to_modify):
         if count != len(dir_to_modify) - 1:
-            modified_dir = modified_dir + each + "\\"
+            modified_dir = modified_dir + each + os.sep
         else:
             modified_dir = modified_dir + each
 
@@ -174,10 +175,10 @@ def pc_access_tree(pc_name, file_dir, hard_stop):
     f = base64.b64decode(hard_stop)
     stop = f.decode()
 
-    directory_to_iter = url.split("\\")
+    directory_to_iter = url.split(os.sep)
     directory = ""
     for each in directory_to_iter:
-        directory = directory + each + "\\"
+        directory = directory + each + os.sep
         if each == stop:
             break
 
@@ -260,7 +261,7 @@ def home():
         return redirect(url_for("index"))
     '''
 
-    directory_info = walk_root_folder("C:\\LAN_Public")
+    #directory_info = walk_root_folder("C:\\LAN_Public")
 
     #walk_folder("C:\LAN_Public")
 
@@ -271,11 +272,11 @@ def home():
 @login_required
 def download_file(pc_name, file_dir, file_info):
     #check to make sure temp is clean, otherwise delete all exisiting files.
-    path = os.path.join(app.root_path, "static\\temp")
+    path = os.path.join(app.root_path, "static" + os.sep + "temp")
     os.chdir(path)
     filenames = os.listdir()
     for file in filenames:
-        os.remove(path + "\\" + file)
+        os.remove(path + os.sep + file)
 
     f = base64.b64decode(file_dir)
     file_dir = f.decode()
@@ -292,11 +293,11 @@ def download_file(pc_name, file_dir, file_info):
 @login_required
 def view_file(pc_name, file_dir, file_info):
     #check to make sure temp is clean, otherwise delete all exisiting files.
-    path = os.path.join(app.root_path, "static\\temp")
+    path = os.path.join(app.root_path, "static" + os.sep + "temp")
     os.chdir(path)
     filenames = os.listdir()
     for file in filenames:
-        os.remove(path + "\\" + file)
+        os.remove(path + os.sep + file)
 
     #decoding the file directory
     f = base64.b64decode(file_dir)
@@ -335,7 +336,7 @@ def download_remote_file(ip, port, file_dir, file_info):
         message = "GET$*$" + str(file_dir)
         s.sendall(message.encode('utf-8'))
 
-        path = app.root_path + "/static/temp/" + file_name
+        path = app.root_path + "/static" + os.sep + "temp" + os.sep + file_name
         f = open(path, "wb")
         
         data = s.recv(1024)
@@ -386,6 +387,6 @@ def child_node_setup():
 @app.route("/download-server", methods = ["GET"])
 @login_required
 def download_server():
-    download_link = os.getcwd() + "\\app\\server.py" #make sure sending .exe
+    download_link = os.getcwd() + os.sep + "app" + os.sep + "server.py" #make sure sending .exe
     return send_file(download_link, as_attachment = True)
 

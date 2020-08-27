@@ -5,7 +5,7 @@ Remote File Access Web Tool
 ![](https://i.imgur.com/11Fybxd.png)
 
 #Reproducing a Working State
-1. Setup Environment on Command Prompt (WSL, for all its beauty doesnt accept Python's escape characters in the same manner)
+1. Setup Environment on Command Prompt ~~(WSL, for all its beauty doesnt accept Python's escape characters in the same manner)~~ Now supporting WSL !!!
 2. Install Requirements
 3. set FLASK_APP=run.py
 4. Make sure you setup your desired REGISTER_KEY in the config.py

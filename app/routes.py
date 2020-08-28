@@ -104,6 +104,7 @@ def pc_access(pc_name, folder):
             dir_ = ""
         else:
             f = base64.b64decode(folder)
+            
             url = f.decode()
             try:
                 directory = walk_folder(url)
@@ -160,6 +161,7 @@ def directory_tree(url):
         else:
             modified_dir = modified_dir + each
 
+    
     b = str.encode(modified_dir)
     dir_ = base64.b64encode(b)
     return (dir_, updated_tree)

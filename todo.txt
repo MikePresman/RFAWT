@@ -1,0 +1,6 @@
+Add tilde (~) to posix systems in dir tree
+Make it obvious in search that search in posix begins with / (/usr/) etc.
+Fix searched directory not found error message in posix
+implement upload feature
+figure out how to make server run as a daemon process
+

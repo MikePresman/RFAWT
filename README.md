@@ -8,7 +8,6 @@
 * [Usage](#usage)
 * [Roadmap](#roadmap)
 * [Contributing](#contributing)
-* [License](#license)
 * [Contact](#contact)
 
  
@@ -16,20 +15,20 @@
 
 ## About The Project
 
-This project was inspired by a problem that I wanted to solve as a CS student who likes to develop on his desktop PC but then needs transfer/have files available on his laptop. A lot of the times transferring files either requires an account to a reputable service such as Dropbox, or it requires a USB key (which may not be readily accessible). But even with a Dropbox or USB you have to remember to upload the proper files; which can only become apparent at a later date. As a result I began RFAWT in order to easily and quickly transfer files from anyone of my PC's to a remote machine while anywhere in the world, (primarily at school) while having access to my entire PC file structure.
+This project allows any individual to connect to any number of machines on a LAN and get access to their folder structure and files remotely via HTTP.
 
 Overview of How it Works
-* Setup a Flask server on your main machine at home with port forwarding enabled on your network
-* Setup any node children servers on any other pc's in your home which will connect to your main pc. (This allows you to grab files from more than one PC without having to install requirements on each)
-* Create an account for login authentication.
+* Connect to the networks IP via the browser
+* Login into the server via credentials established on setup
+* Gain access to any connected PC on the remote network to get access to their files and folders
 
-![](https://i.imgur.com/s0ayhd4.png)
+![](https://i.imgur.com/s0ayhd4.png =300x300)
+![](https://i.imgur.com/4ZtGohZ.png=300x300)
 
-
-This project was initially created for windows as back in the day I mainly used Windows. But now I have made changes to the codebase in order to support Mac OSX as well as Linux. Full support for UNIX (OSX and Linix) is still in progress as I am still looking for potential bugs but nevertheless RFAWT is fully usuable on all platforms.
+This project supports both Unix (Mac OSX and Linux) as well as Windows systems.
 
 ### Built With
-Major frameworks and tools used in this project. Please note that a lot of compliemntary libraries were also significant.
+Major frameworks and tools used in this project. Please note that a lot of complimentary libraries were also significant.
 * [Python](https://www.python.org/download/releases/3.0/)
 * [Flask](https://flask.palletsprojects.com/en/1.1.x/)
 * [Bootstrap](https://getbootstrap.com/)
@@ -37,18 +36,21 @@ Major frameworks and tools used in this project. Please note that a lot of compl
  
 
 ## Getting Started
-This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* Must have Python3, Pip3, and Virtualenv.
+* Must have Python3, Pip3, and venv.
 * Example of how to setup venv and start the virtual environment
-```sh
-python3 -m venv ./rfawt/env && source bin/activate
-```
 
+-Unix (Mac and Linux & Windows WSL Terminal)
+```sh
+python3 -m venv ./rfawt_env && cd ./rfawt_env && source bin/activate && cd ..
+```
+-Windows
+```sh
+python3 -m -venv ./rfawt_env && cd ./rfawt_env && cd scripts && activate && cd ..
+```
 ### Installation
 
 1. Clone the repo
@@ -57,15 +59,18 @@ git clone https://github.com/MikePresman/RFAWT.git
 ```
 2. Cd into RFAWT and Install the Requirements.txt
 ```sh
-pip3 -r requirements.txt
+cd RFAWT && pip3 -r requirements.txt
 ```
 3. Setup the Flask Server
+* Unix (Linux and OSX)
 ```sh
-// Unix : export FLASK_APP=run.py
-// Unix : export FLASK_ENV=development
-
-// Windows : set FLASK_APP=run.py
-// Windows : set FLASK_ENV=development
+export FLASK_APP=run.py
+export FLASK_ENV=production
+```
+* Windows
+```sh
+set FLASK_APP=run.py
+set FLASK_ENV=production
 ```
 4. Start the server
 ```sh
@@ -76,8 +81,8 @@ flask run
 
 
 ## Usage
-Login with the default credentials. 
-Username: Admin
+Login with the default credentials. <br/>
+Username: Admin<br/>
 Password: 1234
 
 
@@ -99,9 +104,6 @@ Contributions are what make the open source community such an amazing place to b
 
  
 
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
 
  
 
@@ -116,4 +118,5 @@ Michael Presman - mikepresman@gmail.com
  
 
 
-![](https://i.imgur.com/o2dOuJo.png)
+
+

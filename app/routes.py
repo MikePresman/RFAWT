@@ -279,7 +279,7 @@ def download_file(pc_name, file_dir, file_info):
     except FileNotFoundError:
         os.mkdir(path)
         os.chdir(path)
-    
+
     filenames = os.listdir()
     for file in filenames:
         os.remove(path + os.sep + file)

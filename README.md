@@ -22,7 +22,7 @@ Overview of How it Works
 * Login into the server via credentials established on setup
 * Gain access to any connected PC on the remote network to get access to their files and folders
 
-![](https://i.imgur.com/s0ayhd4.png =300x300)
+![](https://i.imgur.com/s0ayhd4.png=300x300)
 ![](https://i.imgur.com/4ZtGohZ.png=300x300)
 
 This project supports both Unix (Mac OSX and Linux) as well as Windows systems.
